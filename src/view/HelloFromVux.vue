@@ -6,6 +6,7 @@
     </div>
     <group title="cell demo">
       <cell title="VUX" value="cool" is-link></cell>
+      <div>123123</div>
     </group>
   </div>
 </template>
