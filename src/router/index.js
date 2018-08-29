@@ -42,6 +42,12 @@ export const constantRouterMap = [
         component: () => import('@/view/User')
       }
     ]
+  },
+  {
+    path: '/idcard',
+    name: 'idcard',
+    meta: {title: '身份证及银行卡信息验证'},
+    component: () => import('@/view/IdCard')
   }
 ]
 
