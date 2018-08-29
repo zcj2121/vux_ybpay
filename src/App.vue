@@ -1,6 +1,8 @@
 <template>
   <div id="app">
-    <router-view></router-view>
+    <transition name="fade" class="router">
+      <router-view class="r"></router-view>
+    </transition>
   </div>
 </template>
 
@@ -11,9 +13,37 @@ export default {
 </script>
 
 <style lang="less">
-@import '~vux/src/styles/reset.less';
+  @import '~vux/src/styles/reset.less';
 
-body {
-  background-color: #fbf9fe;
-}
+  body {
+    background-color: #f4f4f4;
+  }
+  html, body, #app {
+    height: 100%;
+    width: 100%;
+    overflow-x: hidden;
+  }
+  @media screen and (min-width: 320px) {
+    html {font-size: 14px;}
+  }
+
+  @media screen and (min-width: 360px) {
+    html {font-size: 16px;}
+  }
+
+  @media screen and (min-width: 400px) {
+    html {font-size: 18px;}
+  }
+
+  @media screen and (min-width: 440px) {
+    html {font-size: 20px;}
+  }
+
+  @media screen and (min-width: 480px) {
+    html {font-size: 22px;}
+  }
+
+  @media screen and (min-width: 640px) {
+    html {font-size: 28px;}
+  }
 </style>

@@ -7,6 +7,8 @@ const store = new Vuex.Store({
   state: {
 // 页面打开默认设置登录状态为否
     isLogin : false,
+    isLoading: false,
+    direction: 'forward',
 // 保存登录信息
     userInfo : {
       'loginname' : '',
@@ -26,6 +28,12 @@ const store = new Vuex.Store({
   actions: {
     isLogin({commit}) {
       commit('ISLOGIN');
+    },
+    isLoading({commit}) {
+      commit('ISLOADING');
+    },
+    direction({commit}) {
+      commit('DIRECTION');
     },
     signOut({commit}) {
       commit('SIGNOUT');
@@ -82,6 +90,12 @@ const store = new Vuex.Store({
   getters: {
     getLoginState (state) {
       return state.isLogin;
+    },
+    getLoadingState (state) {
+      return state.isLoading;
+    },
+    getDirectionState (state) {
+      return state.direction;
     },
     getUserInfo (state) {
       return state.userInfo;
