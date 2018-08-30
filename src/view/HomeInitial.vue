@@ -2,7 +2,9 @@
   <div class="home-initial">
     <div class="header">
       <div class="header-title">期望额度</div>
-      <x-input mask="999 9999 9999" v-model="maskValue" :max="13" placeholder="请输入100-20万之间100整数倍的数字"></x-input>
+      <group>
+        <x-input mask="999 9999 9999" v-model="maskValue" :max="13" placeholder="请输入100-20万之间100整数倍的数字" @on-click-clear-icon="abcd"></x-input>
+      </group>
     </div>
     <div class="content">
       <div class="con-box">
@@ -27,11 +29,12 @@
 </template>
 
 <script>
-  import { XButton, Flexbox, FlexboxItem, Divider, XInput, Grid, GridItem, GroupTitle } from 'vux'
+  import { XButton, Flexbox, FlexboxItem, Divider, XInput, Grid, GridItem, GroupTitle, Group } from 'vux'
   export default {
     data () {
       return {
-        maskValue: ''
+        maskValue: '',
+        enterText: ''
       }
     },
     components: {
@@ -42,9 +45,16 @@
       XInput,
       Grid,
       GridItem,
-      GroupTitle
+      GroupTitle,
+      Group
     },
     methods: {
+      onEnter (val) {
+        console.log('click enter!', val)
+      },
+      abcd () {
+        console.log('123123')
+      },
       onItemClick () {
         console.log('on item click')
       }
@@ -55,16 +65,39 @@
 <style lang="less" rel="stylesheet/less">
   .home-initial{
     .header{
+      height:38%;
+      width:100%;
+      overflow: hidden;
+      .weui-cells{
+        border:none;
+        background:transparent;
+        .vux-x-input.weui-cell{
+          border-radius: 2.5rem;
+          background: #fff;
+          margin: 0 15px;
+          .weui-cell__hd{
+            display: none;
+          }
+        }
+      }
+      .weui-cells:before, .weui-cells:after{
+        border:none;
+      }
       .weui-cell__bd.weui-cell__primary{
         background: #fff;
         border-radius: 2.5rem;
-        height: 2.5rem;
-        line-height: 2.5rem;
-        padding: 0 30px;
+        height: 1.5rem;
+        line-height: 1.5rem;
+        padding: 0 15px;
         font-size: 0.8rem;
         input{
           text-align: center;
         }
+      }
+      .weui-cell__ft {
+        position: absolute;
+        right: 20px;
+        bottom: 0.8rem;
       }
       .weui-cell:before{
         border-top:none;
@@ -127,8 +160,6 @@
 <style lang="less" scoped rel="stylesheet/less">
 .home-initial{
   .header{
-    height:30%;
-    width:100%;
     background: -webkit-linear-gradient(#41a1fd, #76dbfd); /* Safari 5.1 - 6.0 */
     background: -o-linear-gradient(#41a1fd, #76dbfd); /* Opera 11.1 - 12.0 */
     background: -moz-linear-gradient(#41a1fd, #76dbfd); /* Firefox 3.6 - 15 */
@@ -136,7 +167,7 @@
     .header-title{
       color:#fff;
       font-size:1.2rem;
-      padding-top:10%;
+      padding-top:2.5rem;
       line-height: 1.5rem;
       display: block;
       text-align: center;
@@ -145,6 +176,7 @@
   .content{
     position: relative;
     min-height: 42%;
+    margin-bottom:10%;
     .con-box{
       width:100%;
       position: absolute;

@@ -5,8 +5,7 @@
     </div>
     <drawer>
       <view-box ref="viewBox">
-        <transition
-          :name="viewTransition">
+        <transition name="transitionRouter">
           <router-view class="router-view"></router-view>
         </transition>
 

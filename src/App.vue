@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <transition name="fade" class="router">
+    <transition name="transitionRouter" class="router">
       <router-view class="r"></router-view>
     </transition>
   </div>
@@ -47,4 +47,13 @@ export default {
   @media screen and (min-width: 640px) {
     html {font-size: 28px;}
   }
+  /*.transitionRouter-enter-active,*/
+  /*.transitionRouter-leave-active {*/
+    /*transition: all 0.4s;*/
+  /*}*/
+
+  /*.transitionRouter-enter,*/
+  /*.transitionRouter-leave{*/
+    /*transform: translate3d(100%, 0, 0);*/
+  /*}*/
 </style>
