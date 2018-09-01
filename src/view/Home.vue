@@ -10,23 +10,23 @@
         </transition>
 
         <tabbar class="vux-demo-tabbar" icon-class="vux-center" slot="bottom">
-          <tabbar-item :link="{path:'homeInitial'}" :selected="this.$route.path === '/home/homeInitial'">
+          <tabbar-item :link="{path:'homeInitial'}" :selected="this.$route.path === '/Home/HomeInitial'">
             <span class="demo-icon-22" slot="icon">
-              <img src="../assets/img/home.png" alt="" v-if="this.$route.path === '/home/homeInitial'">
+              <img src="../assets/img/home.png" alt="" v-if="this.$route.path === '/Home/HomeInitial'">
               <img src="../assets/img/home_no.png" alt="" v-else>
             </span>
             <span class="tabbar-item-title" slot="label">首页</span>
           </tabbar-item>
-          <tabbar-item :link="{path:'transaction'}" :selected="this.$route.path === '/home/transaction'">
+          <tabbar-item :link="{path:'transaction'}" :selected="this.$route.path === '/Home/Transaction'">
             <span class="demo-icon-22" slot="icon">
-              <img src="../assets/img/transaction.png" alt="" v-if="this.$route.path === '/home/transaction'">
+              <img src="../assets/img/transaction.png" alt="" v-if="this.$route.path === '/Home/Transaction'">
               <img src="../assets/img/transaction_no.png" alt="" v-else>
             </span>
             <span class="tabbar-item-title" slot="label"><span>交易记录</span></span>
           </tabbar-item>
-          <tabbar-item :link="{path:'user'}" :selected="this.$route.path === '/home/user'">
+          <tabbar-item :link="{path:'user'}" :selected="this.$route.path === '/Home/User'">
             <span class="demo-icon-22" slot="icon">
-              <img src="../assets/img/user.png" alt="" v-if="this.$route.path === '/home/user'">
+              <img src="../assets/img/user.png" alt="" v-if="this.$route.path === '/Home/User'">
               <img src="../assets/img/user_no.png" alt="" v-else>
             </span>
             <span class="tabbar-item-title" slot="label">我的</span>
@@ -84,7 +84,7 @@
       }),
       leftOptions () {
         return {
-          showBack: this.$route.path !== '/home/homeInitial'&&this.$route.path === '/home/transaction'&&this.$route.path === '/home/user'
+          showBack: this.$route.path !== '/Home/HomeInitial'&&this.$route.path === '/Home/Transaction'&&this.$route.path === '/Home/User'
         }
       },
       isShowNav () {

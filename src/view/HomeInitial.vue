@@ -3,7 +3,7 @@
     <div class="header">
       <div class="header-title">期望额度</div>
       <group>
-        <x-input mask="999 9999 9999" v-model="maskValue" :max="13" placeholder="请输入100-20万之间100整数倍的数字" @on-click-clear-icon="abcd"></x-input>
+        <x-input v-model="maskValue"  placeholder="请输入100-20万之间100整数倍的数字" @on-click-clear-icon="abcd"></x-input>
       </group>
     </div>
     <div class="content">
@@ -15,7 +15,7 @@
             <span class="grid-int-active"></span>
           </grid-item>
         </grid>
-        <x-button type="primary" class="def-btn" style="border-radius:99px;width: 60%;" link="/idcard">下一步</x-button>
+        <x-button type="primary" class="def-btn" style="border-radius:99px;width: 60%;" link="/IdCard">下一步</x-button>
         <div class="con-info vux-1px-t">
           <img src="../assets/img/home_int_info.png" alt="">
           <span>公告：不向学生提供借款服务</span>
@@ -33,7 +33,7 @@
   export default {
     data () {
       return {
-        maskValue: '',
+        maskValue: null,
         enterText: ''
       }
     },
@@ -47,6 +47,16 @@
       GridItem,
       GroupTitle,
       Group
+    },
+    watch: {
+      maskValue: {
+        handler (val) {
+          if (this.maskValue) {
+            this.maskValue = (this.maskValue).toFixed(2)
+          }
+        },
+        deep: true
+      }
     },
     methods: {
       onEnter (val) {
@@ -89,16 +99,16 @@
         height: 1.5rem;
         line-height: 1.5rem;
         padding: 0 15px;
-        font-size: 0.8rem;
+        font-size: 1rem;
         input{
           text-align: center;
         }
       }
-      .weui-cell__ft {
-        position: absolute;
-        right: 20px;
-        bottom: 0.8rem;
-      }
+      /*.weui-cell__ft {*/
+        /*position: absolute;*/
+        /*right: 20px;*/
+        /*bottom: 0.8rem;*/
+      /*}*/
       .weui-cell:before{
         border-top:none;
       }

@@ -2,16 +2,19 @@
   <div class="login">
     <div class="header">
       <div class="header-logo">
-        <img src="../../assets/img/home.png" alt="logo">
       </div>
-      <div class="header-title">请输入您的手机号进行登录或注册</div>
+      <div class="header-title">18610108888</div>
     </div>
     <div class="content">
       <group class="phone-box">
-        <x-input mask="999 9999 9999" v-model="maskValue" :max="13" placeholder="请输入手机号"></x-input>
+        <x-input type="password" v-model="maskValue" :max="13" placeholder="请输入密码">
+        </x-input>
       </group>
-      <x-button class="login-btn" type="primary" link="/LoginLanding">下一步</x-button>
-      <x-button class="login-btn" type="primary" link="/LoginRegister">下一步</x-button>
+      <x-button class="login-btn" type="primary" link="/Home">登陆</x-button>
+      <div class="login-forget">
+        <a @click="forgetPassword">忘记密码</a>
+      </div>
+
     </div>
     <div class="footer">
     </div>
@@ -33,6 +36,9 @@
       Group
     },
     methods: {
+      forgetPassword () {
+        this.$router.push({name: 'LoginForget', query: {}})
+      }
     }
   }
 </script>
@@ -58,19 +64,15 @@
     .header{
       width:100%;
       .header-logo{
-        height: 10rem;
+        height: 8.5rem;
         text-align: center;
         margin: auto;
-        img{
-          margin-top:2rem;
-          width: 10rem;
-          height: 6rem;
-        }
       }
       .header-title{
         color:#333;
-        font-size:1.2rem;
-        line-height: 1.5rem;
+        font-size:1.5rem;
+        line-height: 1.7rem;
+        font-weight: bold;
         display: block;
         text-align: center;
       }
@@ -78,13 +80,21 @@
     .content{
       width:100%;
       .phone-box{
-        margin-top:4rem;
+        padding-top:4rem;
       }
       .login-btn{
         margin-top:2rem;
         border-radius:2px;
-        width: 80%;
+        width: 90%;
         background: #41a1fd;
+      }
+      .login-forget{
+        padding: 0 5%;
+        margin-top:1rem;
+        text-align: right;
+        a{
+          color:#666;
+        }
       }
     }
     .footer{
