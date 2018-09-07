@@ -16,7 +16,7 @@
           @on-hide="log('hide', $event)"></datetime>
         <x-input title="电子签章" name="mobile" placeholder="请签署签章"></x-input>
       </group>
-      <x-button class="next-btn" type="info" link="/Home">阅读并签署</x-button>
+      <x-button class="next-btn" type="info" link="/phoneValidate">阅读并签署</x-button>
     </div>
     <div class="footer">
     </div>

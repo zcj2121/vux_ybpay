@@ -1,4 +1,4 @@
-# vux_ybpay
+# fs-consumer-finance-web
 
 > A Vue.js project
 

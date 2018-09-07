@@ -1,32 +1,50 @@
 import request from '@/utils/request'
+import Qs from 'qs'
 
-export function login(username, password) {
+// 验证用户是否存在
+export function isUserExist(data) {
   return request({
-    url: '/dr/loginCheck.do',
-    method: 'get',
-    params: { username, password }
+    url: '/login/isUserExist',
+    data: Qs.stringify(data)
   })
 }
 
-export function getInfo(token) {
+// 注册
+export function register(data) {
   return request({
-    url: '/dr/getLoginUserVbs.do',
-    method: 'get'
-    // params: { token }
+    url: '/login/register',
+    data: Qs.stringify(data)
   })
 }
 
-export function logout() {
+// 注册 发送短信验证码
+export function sendVerifyCode(data) {
   return request({
-    url: '/dr/logoutVbs.do',
-    method: 'get'
+    url: '/login/sendVerifyCode',
+    data: Qs.stringify(data)
   })
 }
 
-export function menuItem() {
+// 登陆
+export function signIn(data) {
   return request({
-    url: '/dr/data/vbsmenu.do',
-    method: 'get'
+    url: '/login/signIn',
+    data: Qs.stringify(data)
   })
 }
 
+// 重置密码
+export function resetPassword(data) {
+  return request({
+    url: '/login/resetPassword',
+    data: Qs.stringify(data)
+  })
+}
+
+// 验证 验证码是否正确
+export function checkCode(data) {
+  return request({
+    url: '/login/checkCode',
+    data: Qs.stringify(data)
+  })
+}

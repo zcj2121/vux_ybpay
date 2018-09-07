@@ -10,7 +10,16 @@ module.exports = {
     // Paths
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
-    proxyTable: {},
+    proxyTable: {
+      '/yeepay': {
+        // target: 'http://172.18.163.147:8089/fs-web', // 何君
+        target: 'http://172.18.162.224:8080//fs-web', // 亚洲
+        changeOrigin: true,
+        pathRewrite: {
+          '^/yeepay': ''
+        }
+      }
+    },
 
     // Various Dev Server settings
     host: 'localhost', // can be overwritten by process.env.HOST

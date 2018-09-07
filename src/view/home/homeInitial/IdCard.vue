@@ -1,7 +1,7 @@
 <template>
   <div class="home-idcard">
     <div class="header vux-1px-b">
-      <progress-bar class="vux-1px-b"></progress-bar>
+      <progress-bar class="vux-1px-b" isActive="1"></progress-bar>
       <div class="idcard-box">
         <div class="pic-box">
           <flexbox :gutter="15">
@@ -56,7 +56,7 @@
           </popup>
         </div>
       </div>
-      <x-button class="next-btn" type="info" link="/HomeFace">下一步</x-button>
+      <x-button class="next-btn" type="info" link="/homeFace">下一步</x-button>
     </div>
     <div class="footer">
     </div>

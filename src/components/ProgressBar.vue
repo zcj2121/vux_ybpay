@@ -2,33 +2,12 @@
   <div class="progress-bar">
     <div class="bar-header">
       <div class="step-initial">
-        <div class="step-item active">
+        <div class="step-item" v-for="(item, index) in progressData" :key="index" :class="{active: active >= item.code}">
           <div class="step-circle">
-            <div class="step-number">1</div>
+            <div class="step-number">{{item.code}}</div>
           </div>
           <div class="step-line"></div>
-          <div class="step-title">身份认证</div>
-        </div>
-        <div class="step-item">
-          <div class="step-circle">
-            <div class="step-number">2</div>
-          </div>
-          <div class="step-line"></div>
-          <div class="step-title">授权认证</div>
-        </div>
-        <div class="step-item">
-          <div class="step-circle">
-            <div class="step-number">3</div>
-          </div>
-          <div class="step-line"></div>
-          <div class="step-title">完善信息</div>
-        </div>
-        <div class="step-item">
-          <div class="step-circle">
-            <div class="step-number">4</div>
-          </div>
-          <div class="step-line"></div>
-          <div class="step-title">获取额度</div>
+          <div class="step-title">{{item.name}}</div>
         </div>
       </div>
     </div>
@@ -39,10 +18,23 @@
   import { Flow, FlowState, FlowLine} from 'vux'
   export default {
     name: 'ProgressBar',
-    props: '',
+    props: ['isActive'],
     data () {
       return {
-        maskValue: ''
+        active: '',
+        progressData: [{
+          name: '身份认证',
+          code: 1
+        }, {
+          name: '授权认证',
+          code: 2
+        }, {
+          name: '完善信息',
+          code: 3
+        }, {
+          name: '获取额度',
+          code: 4
+        }]
       }
     },
     components: {
@@ -54,6 +46,9 @@
       onItemClick () {
         console.log('on item click')
       }
+    },
+    mounted () {
+      this.active = this.isActive
     }
   }
 </script>

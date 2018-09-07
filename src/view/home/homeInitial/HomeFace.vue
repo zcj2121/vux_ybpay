@@ -8,7 +8,7 @@
       </div>
       <div class="video-explain">请正对手机，进行人脸验证</div>
       <div class="video-info">按照提示完成相关动作</div>
-      <x-button class="video-btn" type="primary" link="/SetTransaction">刷脸验证</x-button>
+      <x-button class="video-btn" type="primary" link="/setTransaction">刷脸验证</x-button>
     </div>
     <div class="footer">
     </div>
@@ -51,7 +51,7 @@
 
       },
       forgetPassword () {
-        this.$router.push({name: 'LoginForget', query: {}})
+        this.$router.push({name: 'loginForget', query: {}})
       }
     }
   }

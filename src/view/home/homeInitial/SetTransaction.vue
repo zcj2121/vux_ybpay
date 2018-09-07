@@ -85,7 +85,7 @@
         }
         if (curVal.length === 6) {
           if (curVal === this.password) {
-            this.$router.push({name: 'AccreditBook', query: {}})
+            this.$router.push({name: 'accreditBook', query: {}})
           } else {
             this.errorShow = true
             this.pwdTitle = '为了保证交易安全，请设置交易密码'

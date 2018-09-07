@@ -38,3 +38,27 @@ export function userNamePhone(str) {
   const reg = /^(?!_)(?!.*?_$)[a-zA-Z0-9_]+$/
   return reg.test(str)
 }
+
+/* 密码 数字与字母组合*/
+export function validatePassword(str) {
+  const reg = /^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{8,16}$/
+  return reg.test(str)
+}
+
+/* 取空格 */
+export function trim(str) {
+  return str.replace(/\s+/g, '')
+}
+
+/* 输入延迟 */
+export function debounce(func, delay) {
+  let timer
+  return function(...args) {
+    if (timer) {
+      clearTimeout(timer)
+    }
+    timer = setTimeout(() => {
+      func.apply(this, args)
+    }, delay)
+  }
+}
