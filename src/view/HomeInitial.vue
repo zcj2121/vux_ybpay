@@ -2,7 +2,7 @@
   <div class="home-initial">
     <div class="header">
       <div class="header-con" v-if="statu == '1'">
-        <div class="header-title">期望额度</div>
+        <div class="header-title">{{abc | parseTime('{y}-{m}-{d}')}}</div>
         <group>
           <x-input v-model="maskValue"  placeholder="请输入100-20万之间100整数倍的数字"></x-input>
         </group>
@@ -58,7 +58,8 @@
         statu: '1', // 1: 未登陆/未授信  2：正常  3：逾期
         conActive: 3,
         allMoney: '',
-        useMoney: ''
+        useMoney: '',
+        abc: '2018-12-12'
       }
     },
     components: {
