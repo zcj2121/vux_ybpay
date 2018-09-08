@@ -20,7 +20,7 @@
           <popup-radio title="借款期数" :options="periodsOptions" v-model="form.periods" placeholder="请选择"></popup-radio>
           <popup-radio title="借款用途" :options="purposeOptions" v-model="form.purpose" placeholder="请选择"></popup-radio>
           <popup-radio title="还款方式" :options="modeOptions" v-model="form.mode" placeholder="请选择"></popup-radio>
-          <div class="weui-cell weui-cell--title" v-if="homeAmount"><span>首期需还 {{homeAmount}} （{{homeRepayDate | dateFormat}}）</span><span class="right-btn" @click="supportBank">还款详情</span></div>
+          <div class="weui-cell weui-cell--title" v-if="homeAmount"><span>首期需还 {{homeAmount}} （{{homeRepayDate | dateTime}}）</span><span class="right-btn" @click="supportBank">还款详情</span></div>
           <popup-radio title="收款账户" :options="accountOptions" v-model="form.account" placeholder="请选择"></popup-radio>
         </group>
         <div v-transfer-dom class="alert-detail">
@@ -32,7 +32,7 @@
             <group>
               <div v-for="(item, index) in resData.repaymentPlanList" :key="index" class="weui-cell-other vux-1px-b" @click="toggle(index+1)" :class="{open:isopen === index+1}">
                 <div class="detail-item">
-                  <span class="code">{{index+1}}</span><span class="money">￥{{item.everyLoanAmount}}</span><span class="time">{{item.everyRepayDate | dateFormat}}</span>
+                  <span class="code">{{index+1}}</span><span class="money">￥{{item.everyLoanAmount}}</span><span class="time">{{item.everyRepayDate | dateTime}}</span>
                 </div>
                 <div class="show-box">
                   含本金{{item.everyLoanAmount}}，利息{{item.everyInsterest}}，平台服务费{{item.everyServiceFee}}
@@ -145,22 +145,19 @@
       TransferDom
     },
     filters: {
-      // dateFilter(time) {
-      //   if (time) {
-      //     const date = new Date(time)
-      //     return formatDate(date, 'yyyy-MM-dd')
-      //   } else {
-      //     return ''
-      //   }
-      // },
-      debounceMoney(money) {
-        return debounce(money)
-      }
     },
     created() {
       // 延迟 输入金额 请求 还款计划
-      this.$watch('form.money', debounce((newQuery) => {
-        this.repaymentPlan()
+      this.$watch('form.money', debounce((val) => {
+        if (parseInt(val) > parseInt(this.allmoney)) {
+          this.form.money = ''
+          this.$vux.toast.show({
+            type: 'cancel',
+            text: '请输入有效金额'
+          })
+        } else {
+          this.repaymentPlan()
+        }
       }, 500))
       this.bankCard()
     },
@@ -184,6 +181,32 @@
         if (curVal.length === 6) {
           this.validTradePwd()
         }
+      },
+      'form.purpose': {
+        handler: function(val) {
+          this.repaymentPlan()
+        },
+        deep: true
+      },
+      'form.mode': {
+        handler: function(val) {
+          this.repaymentPlan()
+        },
+        deep: true
+      },
+      'form.periods': {
+        handler: function(val) {
+          this.repaymentPlan()
+        },
+        deep: true
+      },
+      showPwd: {
+        handler: function(val) {
+          if (val === false) {
+            this.tradePwd = ''
+          }
+        },
+        deep: true
       }
     },
     methods: {
@@ -201,7 +224,7 @@
               this.tradePwd = ''
               this.$vux.toast.show({
                 type: 'cancel',
-                text: '验证失败'
+                text: response.returnMessage
               })
             }
           }
@@ -223,7 +246,7 @@
                 for (let val of data) {
                   this.accountOptions.push({
                     key: val.bindIdNo,
-                    value: val.bankName + '(' + val.bankCardNo.substr(val.bankCardNo.length - 4) + ')'
+                    value: val.bankName + '(尾号' + val.bankCardNo.substr(val.bankCardNo.length - 4) + ')'
                   })
                 }
               }
@@ -235,28 +258,33 @@
       },
       // 还款计划
       repaymentPlan() {
-        testRepaymentPlan({
-          userId: this.$store.state.user.userId,
-          productCode: this.$store.state.user.productCode, // 产品code
-          loanAmount: this.form.money, // 借款金额
-          loanProposite: this.form.purpose, // 借款用途
-          repayType: this.form.mode, // 还款方式
-          repayTotalNum: this.form.periods // 还款期数
-        }).then(response => {
-          if (response) {
-            if (response.returnCode === 'SUCCESS') {
-              let data = response.data
-              this.resData = data
-              if (data.repaymentPlanList.length > 0) {
-                console.log(data.repaymentPlanList[0])
-                this.homeAmount = data.repaymentPlanList[0].everyLoanAmount
-                this.homeRepayDate = data.repaymentPlanList[0].everyRepayDate
+        if (this.form.money && this.form.purpose && this.form.mode && this.form.periods) {
+          testRepaymentPlan({
+            userId: this.$store.state.user.userId,
+            productCode: this.$store.state.user.productCode, // 产品code
+            loanAmount: this.form.money, // 借款金额
+            loanProposite: this.form.purpose, // 借款用途
+            repayType: this.form.mode, // 还款方式
+            repayTotalNum: this.form.periods // 还款期数
+          }).then(response => {
+            if (response) {
+              if (response.returnCode === 'SUCCESS') {
+                let data = response.data
+                this.resData = data
+                if (data.repaymentPlanList.length > 0) {
+                  this.homeAmount = data.repaymentPlanList[0].everyLoanAmount
+                  this.homeRepayDate = data.repaymentPlanList[0].everyRepayDate
+                }
               }
             }
-          }
-        }).catch(() => {
-          this.disabled = false
-        })
+          }).catch(() => {
+            this.disabled = false
+          })
+        } else {
+          this.resData = {}
+          this.homeAmount = ''
+          this.homeRepayDate = ''
+        }
       },
       supportBank() {
         this.showBank = true
@@ -265,35 +293,53 @@
         this.isopen = val
       },
       // 借款
-      applyLoan() {
-        applyLoan({
-          userId: this.userId,
-          productCode: this.productCode, // 产品code
-          loanAmount: this.form.money, // 借款金额
-          loanProposite: this.form.purpose, // 借款用途
-          repayType: this.form.mode, // 还款方式
-          repayTotalNum: this.form.periods, // 还款期数
-          eAcctBankNo: this.form.account, // 还款银行
-          callbackUrl: '', // 放款成功回调地址
-          sign: '' // 签名结果
-        }).then(response => {
-          this.disabled = true
-          if (response) {
-            if (response.returnCode === 'SUCCESS') {
-              this.$router.push({ path: '/loginLanding'})
-            }
+      applyLoanFun() {
+        if (this.form.money && this.form.purpose && this.form.mode && this.form.periods) {
+          // if (this.form.money % 100 === 0 && this.form.money >= 500) {
+          if (true) {
+            applyLoan({
+              userId: this.$store.state.user.userId,
+              productCode: this.$store.state.user.productCode, // 产品code
+              loanAmount: this.form.money, // 借款金额
+              loanProposite: this.form.purpose, // 借款用途
+              repayModel: this.form.mode, // 还款方式
+              repayTotalNum: this.form.periods, // 还款期数
+              bindIdNo: this.form.account, // 还款银行
+              callbackUrl: '', // 放款成功回调地址
+              sign: '' // 签名结果
+            }).then(response => {
+              this.disabled = true
+              if (response) {
+                if (response.returnCode === 'SUCCESS') {
+                  this.$router.push({ path: '/loginLanding' })
+                } else {
+                  this.$vux.toast.show({
+                    type: 'cancel',
+                    text: response.returnMessage
+                  })
+                }
+              }
+            }).catch(() => {
+              this.disabled = false
+            })
+          } else {
+            this.$vux.toast.show({
+              type: 'cancel',
+              text: '请输入有效金额'
+            })
           }
-        }).catch(() => {
-          this.disabled = false
-        })
+        }
       },
       showPwdbox() {
+        this.applyLoanFun()
         this.showPwd = true
         this.focus()
       },
       focus() {
-        console.log(this.$refs['pwd'])
-        this.$refs['pwd'].focus()
+        setTimeout(() => {
+          this.$refs['pwd'].focus()
+        }, 100)
+        console.log(this.$refs)
       }
     }
   }
@@ -549,7 +595,6 @@
       }
       .next-btn{
         width: 70%;
-        background: #41a1fd;
         margin-top:2rem;
         font-size: 1rem;
       }

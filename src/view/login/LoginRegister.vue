@@ -20,7 +20,7 @@
       <div class="other-login-box">
         <div class="con-login-box vux-1px-b">
           <group class="phone-box">
-            <x-input type="number" mask="999999" v-model="form.verifyCode" :max="6" placeholder="请输入验证码" :disabled="codeDis"></x-input>
+            <x-input type="number" mask="999999" v-model="form.verifyCode" :max="6" placeholder="请输入验证码"></x-input>
           </group>
           <div class="pwd-img"><img src="../../assets/img/login_code.png" alt=""></div>
         </div>
@@ -47,7 +47,6 @@
       return {
         pwdType: 'password',
         sendDis: false,
-        codeDis: true,
         subDis: true,
         second: 60,
         time: 0,
@@ -116,7 +115,7 @@
               this.subDis = false
               this.$vux.toast.show({
                 type: 'cancel',
-                text: '注册失败'
+                text: response.returnMessage
               })
             }
           }
@@ -137,7 +136,6 @@
           if (response) {
             if (response.returnCode === 'SUCCESS') {
               this.start()
-              this.codeDis = false
               this.$vux.toast.show({
                 type: 'success',
                 text: '发送成功'
@@ -145,12 +143,11 @@
             } else {
               this.$vux.toast.show({
                 type: 'cancel',
-                text: '发送失败'
+                text: response.returnMessage
               })
             }
           }
         }).catch(() => {
-          this.codeDis = false
           this.$vux.toast.show({
             type: 'cancel',
             text: '网络异常'
@@ -189,6 +186,9 @@
         font-size:0.8rem;
         line-height: 1.5rem;
         margin-top: 0;
+        .weui-cell{
+          line-height: 1.5rem;
+        }
         input{
           text-align: center;
         }
@@ -281,19 +281,20 @@
         position: relative;
         margin-top: 1rem;
         .con-login-box{
-          width: 70%;
+          width: 65%;
           margin: initial;
           float: left;
         }
         .reg-btn-box{
           float: right;
-          width: 28%;
+          width: 33%;
           position: absolute;
           bottom: 0;
           right: 0;
           .weui-btn{
+            padding: 10px 5px;
             font-size: 0.4rem;
-            padding:0;
+            line-height: 1rem;
           }
         }
         .phone-box{

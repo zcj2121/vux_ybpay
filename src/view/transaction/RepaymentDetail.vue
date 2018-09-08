@@ -25,7 +25,7 @@
           </div>
         </div>
         <group class="list-item">
-          <cell title="还款明细" is-link @click.native="toDetailSee(index)">
+          <cell title="借款详情" is-link @click.native="toDetailSee(index)">
             <div class="badge-value">
               <span class="vertical-middle">查看</span>
             </div>

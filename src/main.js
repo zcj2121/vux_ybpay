@@ -1,11 +1,10 @@
 import Vue from 'vue'
 import store from './store'
 import router from './router'
-import '@/styles/index.less' // global css
+import '@/styles/common.less' // global css
 import NProgress from 'nprogress' // Progress 进度条
 import 'nprogress/nprogress.css'// Progress 进度条样式
 import App from './App'
-// import FastClick from 'fastclick'
 import { LoadingPlugin, ToastPlugin } from 'vux'
 import { getToken } from '@/utils/auth'
 
@@ -15,15 +14,13 @@ Vue.use(ToastPlugin)
 Vue.use(LoadingPlugin)
 
 // 移动端点击延迟
-// if ('addEventListener' in document) {
-//   document.addEventListener('DOMContentLoaded', function() {
-//     FastClick.attach(document.body)
-//   }, false)
-// }
+// const FastClick = require('fastclick')
+// FastClick.attach(document.body)
 
 Object.keys(filters).forEach(key => {
   Vue.filter(key, filters[key])
 })
+
 Vue.config.productionTip = false
 
 // const whiteList = ['/login', '/loginLanding', '/loginForget', '/loginRegister', '/loginReset'] // 不重定向白名单

@@ -94,7 +94,7 @@
               if (response.returnCode === 'VERIFY_CODE_ERR') {
                 this.$vux.toast.show({
                   type: 'success',
-                  text: '验证码失效'
+                  text: response.returnMessage
                 })
                 setTimeout(() => {
                   this.$router.push({ path: '/loginForget' })
@@ -103,7 +103,7 @@
               this.subDis = false
               this.$vux.toast.show({
                 type: 'cancel',
-                text: '修改失败'
+                text: response.returnMessage
               })
             }
           }

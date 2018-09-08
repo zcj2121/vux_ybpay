@@ -1,31 +1,25 @@
 <template>
-  <div class="loan-sucess">
+  <div class="hepayment-results">
     <div class="header">
     </div>
     <div class="content">
       <div class="result-box">
-        <img src="../../../assets/img/loan_yes.png" alt="">
+        <img v-if="statu" src="../../../assets/img/hepayment_yes.png" alt="">
+        <img v-else src="../../../assets/img/loan_no.png" alt="">
       </div>
       <div class="result-title">
-        {{resultTitle}}
+        {{statu? '还款成功': '还款失败'}}
       </div>
-      <div class="result-name">
-        {{resultName}}
+      <div class="result-name" v-if="!statu">
+        失败原因：  XXXXX
       </div>
-      <div class="result-info">
-        {{resultInfo}}
+      <x-button v-if="statu" class="video-btn" type="primary" @click.native="backHome">完成</x-button>
+      <x-button v-else class="video-btn" type="primary" @click.native="back">再次还款</x-button>
+      <div class="back-box" v-if="statu">
+        <span class="vux-1px-b" @click="toTransaction">查看还款记录</span>
       </div>
     </div>
     <div class="footer">
-      <div class="info-box">
-        <div class="info-box-title vux-1px-b">还款须知</div>
-        <div class="info-box-con">1、请在下一还款日前确保还款银行卡余额充足</div>
-        <div class="info-box-con">2、保持良好信用，有助于提额及费率下调</div>
-      </div>
-      <x-button class="next-btn" type="primary" link="/home/transaction">查看借款记录</x-button>
-      <div class="back-home">
-        <span class="vux-1px-b" @click="back">返回首页</span>
-      </div>
     </div>
   </div>
 </template>
@@ -33,16 +27,12 @@
 <script>
   import { XButton, XInput, GroupTitle, Group } from 'vux'
   export default {
-    data() {
+    data () {
       return {
-        resultTitle: '提现成功',
-        resultName: '¥ 20,000.00',
-        resultInfo: '请关注招商银行卡(尾号1234）账户余额， 具体到账时间以银行为准  '
+        statu: true
       }
     },
-    watch: {
-    },
-    created() {
+    created () {
     },
     components: {
       XButton,
@@ -51,17 +41,21 @@
       Group
     },
     methods: {
+      toTransaction() {
+        this.$router.push({ path: '/repaymentDetail' })
+      },
+      backHome() {
+        this.$router.push({ path: '/home' })
+      },
       back() {
-        this.$router.push({path: '/home'})
+        this.$router.push({ path: '/repaymentCard' })
       }
-    },
-    mounted() {
     }
   }
 </script>
 
 <style lang="less" rel="stylesheet/less">
-  .loan-sucess{
+  .hepayment-results{
     .header{
 
     }
@@ -76,15 +70,13 @@
 </style>
 
 <style lang="less" scoped rel="stylesheet/less">
-  .loan-sucess{
+  .hepayment-results{
     height: 100%;
     .header{
       width:100%;
     }
     .content{
-      background: #fff;
       padding-top:1.5rem;
-      padding-bottom: 1.5rem;
       width:100%;
       margin: auto;
       .result-box{
@@ -98,17 +90,20 @@
       }
       .result-title{
         font-size:1.2rem;
-        color:#ffb400;
+        color:#41a1fd;
         margin:auto;
         text-align: center;
         margin-top: 1.5rem;
       }
+      .result-title.isok{
+        color:#ffb400;
+      }
       .result-name{
-        font-size:1.2rem;
+        font-size:1rem;
         color:#333;
         margin:auto;
         text-align: center;
-        margin-top: 0.4rem;
+        margin-top: 0.6rem;
       }
       .result-info{
         font-size:0.8rem;
@@ -117,34 +112,13 @@
         text-align: center;
         margin-top: 2rem;
         min-height: 1.5rem;
-        width: 15rem;
       }
-    }
-    .footer{
-      .info-box{
-        background: #fff;
-        margin-top:15px;
-        padding:15px;
-        .info-box-title{
-          font-size:0.9rem;
-          padding-bottom: 8px;
-          color: #333;
-        }
-        .info-box-title.vux-1px-b:after{
-          border-color: #efefef;
-        }
-        .info-box-con{
-          font-size: 0.8rem;
-          padding-top:0.2rem;
-          color:#888;
-        }
-      }
-      .next-btn{
+      .video-btn{
         width:80%;
         background: #41a1fd;
         margin-top:4rem;
       }
-      .back-home{
+      .back-box{
         margin-top: 1rem;
         span{
           color: #333;
@@ -155,6 +129,9 @@
         }
         text-align: center;
       }
+    }
+    .footer{
+
     }
   }
 </style>

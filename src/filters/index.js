@@ -1,9 +1,13 @@
-export function parseTime(time, cFormat) {
+export function dateTime(time, cFormat) {
   if (arguments.length === 0) {
     return null
   }
-  const format = cFormat || '{y}-{m}-{d} {h}:{i}:{s}'
-  let date
+  let format, date
+  if (cFormat) {
+    format = '{y}-{m}-{d} {h}:{i}:{s}'
+  } else {
+    format = '{y}-{m}-{d}'
+  }
   if (typeof time === 'object') {
     date = time
   } else {
@@ -49,7 +53,7 @@ export function formatTime(time, option) {
     return '1天前'
   }
   if (option) {
-    return parseTime(time, option)
+    return dateTime(time, option)
   } else {
     return (
       d.getMonth() +

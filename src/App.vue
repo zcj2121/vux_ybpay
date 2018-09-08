@@ -8,7 +8,12 @@
 
 <script>
 export default {
-  name: 'app'
+  name: 'app',
+  data() {
+    return {
+      aaa: '123'
+    }
+  }
 }
 </script>
 

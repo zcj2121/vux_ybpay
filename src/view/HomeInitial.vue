@@ -2,15 +2,15 @@
   <div class="home-initial">
     <div class="header">
       <div class="header-con" v-if="statu == '1'">
-        <div class="header-title">{{abc | parseTime('{y}-{m}-{d}')}}</div>
+        <div class="header-title">期望额度</div>
         <group>
           <x-input v-model="maskValue"  placeholder="请输入100-20万之间100整数倍的数字"></x-input>
         </group>
       </div>
       <div class="header-con-other" v-if="statu == '2'||statu == '3'">
         <div class="header-title">可借额度</div>
-        <div class="header-use">¥ {{useMoney | NumFormat}}</div>
-        <div class="header-all">总额度 <span>{{allMoney | NumFormat}}</span></div>
+        <div class="header-use">¥ {{useMoney}}</div>
+        <div class="header-all">总额度 <span>{{allMoney}}</span></div>
       </div>
       <div class="overdue-img" v-if="statu == '3'">
         <img src="../assets/img/overdue.png" alt="">
@@ -58,8 +58,7 @@
         statu: '1', // 1: 未登陆/未授信  2：正常  3：逾期
         conActive: 3,
         allMoney: '',
-        useMoney: '',
-        abc: '2018-12-12'
+        useMoney: ''
       }
     },
     components: {

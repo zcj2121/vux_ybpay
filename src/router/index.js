@@ -149,6 +149,12 @@ export const constantRouterMap = [
     meta: { title: '还款' },
     component: () => import('@/view/home/homeRepayment/RepaymentCard')
   },
+  {
+    path: '/repaymentResults',
+    name: 'repaymentResults',
+    meta: { title: '还款' },
+    component: () => import('@/view/home/homeRepayment/repaymentResults')
+  },
   // 交易记录
   {
     path: '/loanDetail',
@@ -171,6 +177,12 @@ export const constantRouterMap = [
   {
     path: '/lepaymentDetail',
     name: 'lepaymentDetail',
+    meta: { title: '按期还款' },
+    component: () => import('@/view/transaction/RepaymentDetail')
+  },
+  {
+    path: '/repaymentDetail',
+    name: 'repaymentDetail',
     meta: { title: '按期还款' },
     component: () => import('@/view/transaction/RepaymentDetail')
   }

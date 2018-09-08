@@ -97,7 +97,7 @@
               this.signDis = false
               this.$vux.toast.show({
                 type: 'cancel',
-                text: '登陆失败'
+                text: response.returnMessage
               })
             }
           }

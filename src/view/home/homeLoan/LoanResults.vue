@@ -4,7 +4,7 @@
     </div>
     <div class="content">
       <div class="result-box">
-        <img src="../../../assets/img/home.png" alt="">
+        <img :src="require('../../../assets/img/'+img)" alt="">
       </div>
       <div class="result-title">
         {{resultTitle}}
@@ -36,6 +36,7 @@
         isShow: true,
         putShow: false,
         confirmShow: false,
+        img: 'loan_ing.png',
         second: 30
       }
     },
@@ -71,6 +72,7 @@
         if (val === 'ok') {
           this.resultTitle = '手速不够快啊，好几亿被抢走了'
           this.resultName = '明日请早哦'
+          this.img = 'loan_null.png'
           this.resultInfo = ''
           this.isShow = false
           this.putShow = true
@@ -78,6 +80,7 @@
         } else if (val === 'no') {
           this.resultTitle = '提现失败'
           this.resultName = '失败原因：  XXXXX'
+          this.img = 'loan_no.png'
           this.resultInfo = ''
           this.isShow = false
           this.putShow = false
@@ -88,6 +91,7 @@
         this.second = 30
         this.resultTitle = '您的借款正在处理中'
         this.resultName = 's 后将返回结果，请耐心等待'
+        this.img = 'loan_ing.png'
         this.resultInfo = ''
         this.isShow = true
         this.putShow = false
@@ -122,7 +126,7 @@
       width:100%;
     }
     .content{
-      padding-top:2rem;
+      padding-top:1.5rem;
       width:100%;
       margin: auto;
       .result-box{
@@ -139,7 +143,7 @@
         color:#41a1fd;
         margin:auto;
         text-align: center;
-        margin-top: 2rem;
+        margin-top: 1.5rem;
       }
       .result-name{
         font-size:1rem;

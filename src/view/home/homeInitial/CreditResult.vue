@@ -4,9 +4,9 @@
     </div>
     <div class="content">
       <div class="result-box">
-        <img src="../../../assets/img/home.png" alt="">
+        <img :src="require('../../../assets/img/'+img)" alt="">
       </div>
-      <div class="result-title">
+      <div class="result-title" :class="{isok:isOk}">
         {{resultTitle}}
       </div>
       <div class="result-name">
@@ -35,7 +35,9 @@
         resultInfo: '(申请结果返回前，请勿关闭页面，以免影响审核结果)',
         isShow: true,
         putShow: false,
-        confirmShow: false
+        confirmShow: false,
+        img: 'credit_ing.png',
+        isOk: false
       }
     },
     created () {
@@ -52,12 +54,15 @@
           this.resultTitle = '恭喜，您已获得额度'
           this.resultName = '￥20,000.00'
           this.resultInfo = ''
+          this.img = 'credit_yes.png'
+          this.isOk = true
           this.isShow = false
           this.putShow = true
           this.confirmShow = false
         } else if (val === 'no') {
           this.resultTitle = '抱歉，申请未通过'
           this.resultName = '您可以重新填写信息后再次提交'
+          this.img = 'credit_no.png'
           this.resultInfo = ''
           this.isShow = false
           this.putShow = false
@@ -90,13 +95,13 @@
       width:100%;
     }
     .content{
-      padding-top:3rem;
+      padding-top:1.5rem;
       width:100%;
       margin: auto;
       .result-box{
         margin: auto;
         width:4rem;
-        height:5rem;
+        height:4rem;
         img {
           width:100%;
           height:100%;
@@ -107,7 +112,10 @@
         color:#41a1fd;
         margin:auto;
         text-align: center;
-        margin-top: 2rem;
+        margin-top: 1.5rem;
+      }
+      .result-title.isok{
+        color:#ffb400;
       }
       .result-name{
         font-size:1rem;
@@ -127,7 +135,7 @@
       .video-btn{
         width:80%;
         background: #41a1fd;
-        margin-top:6rem;
+        margin-top:4rem;
       }
     }
     .footer{

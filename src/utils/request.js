@@ -16,14 +16,11 @@ const service = axios.create({
   // withCredentials: true,
   baseURL: changeUrl,
   method: 'post',
-  timeout: 15000, // 请求超时时间
+  timeout: 15000,
   cache: false
 })
 
 service.interceptors.request.use(config => {
-  // config.headers['Cache-Control'] = 'no-cache, no-store' // 清除缓存
-  // config.headers['ontent-Type'] = 'application/json; charset=UTF-8'
-  // config.headers['Pragma'] = 'no-cache' // 清除缓存
   // if (store.getters.token) {
   //   config.headers['X-Token'] = getToken() // 让每个请求携带token-- ['X-Token']为自定义key 请根据实际情况自行修改
   // }
