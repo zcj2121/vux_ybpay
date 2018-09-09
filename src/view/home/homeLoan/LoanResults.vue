@@ -27,8 +27,9 @@
 
 <script>
   import { XButton, XInput, GroupTitle, Group } from 'vux'
+  import { noticeApplyLoanResult } from '@/api/home'
   export default {
-    data () {
+    data() {
       return {
         resultTitle: '您的借款正在处理中',
         resultName: 's 后将返回结果，请耐心等待',
@@ -41,13 +42,14 @@
       }
     },
     watch: {
-      second (val) {
-        if (val === 22) {
-          this.$router.push({path: '/loanSuccess'})
-        }
+      second(val) {
+        console.log(val)
+        // if (val === 22) {
+        //   this.$router.push({ path: '/loanSuccess' })
+        // }
       }
     },
-    created () {
+    created() {
     },
     components: {
       XButton,
@@ -56,17 +58,43 @@
       Group
     },
     methods: {
-      clearTime () {
+      backResults() {
+        noticeApplyLoanResult({
+          userId: this.$store.state.user.userId,
+          orderId: this.$route.query.order
+        }).then(response => {
+          if (response) {
+            if (response.returnCode === 'SUCCESS') {
+              clearInterval(this.backResults)
+              if (response.data.code === '1') {
+                this.$router.push({ path: '/loanSuccess', query: { money: response.data.money, card: response.data.card }})
+              } else if (response.data.code == '2') {
+                this.result('ok')
+              } else if (response.data.code == '3') {
+                this.result('no')
+              }
+            } else {
+              this.$vux.toast.show({
+                type: 'cancel',
+                text: response.returnMessage
+              })
+            }
+          }
+        }).catch(() => {
+          this.disabled = false
+        })
+      },
+      clearTime() {
         clearInterval(this.intIime)
       },
-      intIime () {
-        if (this.second && this.second>0) {
+      intIime() {
+        if (this.second && this.second > 0) {
           this.second = this.second - 1
         } else {
           this.second = ''
         }
       },
-      result (val) {
+      result(val) {
         this.second = ''
         this.clearTime()
         if (val === 'ok') {
@@ -87,7 +115,7 @@
           this.confirmShow = true
         }
       },
-      retry () {
+      retry() {
         this.second = 30
         this.resultTitle = '您的借款正在处理中'
         this.resultName = 's 后将返回结果，请耐心等待'
@@ -98,8 +126,9 @@
         this.confirmShow = false
       }
     },
-    mounted () {
+    mounted() {
       setInterval(this.intIime, 1000)
+      setInterval(this.backResults, 5000)
     }
   }
 </script>

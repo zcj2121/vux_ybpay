@@ -55,10 +55,11 @@
       return {
         maskValue: null,
         enterText: '',
-        statu: '1', // 1: 未登陆/未授信  2：正常  3：逾期
+        statu: '3', // 1: 未登陆/未授信  2：正常  3：逾期
         conActive: 3,
         allMoney: '',
-        useMoney: ''
+        useMoney: '',
+        userChannel: 'dlb'
       }
     },
     components: {
@@ -124,6 +125,9 @@
         userId: state => state.user.userId,
         productCode: state => state.user.productCode
       })
+    },
+    created() {
+      this.$store.commit('SET_USERCHANNEL', this.userChannel)
     }
   }
 </script>

@@ -8,7 +8,7 @@
     </div>
     <div class="content">
       <div v-show="index=='0'">
-        <div class="item-box">
+        <div class="item-box" v-show="repaymentList.length > 0">
           <group class="list-item" v-for="(item, index) in 3" :key="index">
             <cell title="1,000.00" is-link @click.native="toDetail(index)">
               <div class="badge-value">
@@ -18,20 +18,20 @@
             <div class="weui-cell weui-cell--info">2018年51月08日借1000元 | 共3期 </div>
           </group>
         </div>
-        <div class="null-info" v-show="false">
+        <div class="null-info" v-show="repaymentList.length === 0">
           <img src="../assets/img/no-record.png" alt="">
           <div>暂时没有借款记录</div>
         </div>
       </div>
       <div v-show="index=='1'">
         <div class="item-box">
-          <group class="list-item" v-for="(item, index) in 20" :key="index">
-            <cell title="1,000.00" is-link @click.native="toDetailRep(index)">
+          <group class="list-item" v-for="(item, index) in repaymentList" :key="index">
+            <cell :title="item.repayAmount" is-link @click.native="toDetailRep(item.orderNo)">
               <div class="badge-value">
-                <span class="vertical-middle">按时还款</span>
+                <span class="vertical-middle">还款</span>
               </div>
             </cell>
-            <div class="weui-cell weui-cell--info">2018年51月08日  </div>
+            <div class="weui-cell weui-cell--info">{{item.repayTime|dateTime}}</div>
           </group>
         </div>
         <div class="null-info" v-if="false">
@@ -47,15 +47,20 @@
 
 <script>
   import { Tab, TabItem, GroupTitle, Group, Swiper, SwiperItem, Card, Cell } from 'vux'
+  import { mapState } from 'vuex'
+  import { queryRepaymentList } from '@/api/transaction'
+
   export default {
     data() {
       return {
-        index: 0
+        index: 0,
+        repaymentList: []
       }
     },
     watch: {
     },
     created() {
+      this.queryRepaymentList()
     },
     components: {
       Tab,
@@ -74,11 +79,34 @@
       toDetail() {
         this.$router.push({ path: '/loanDetail' })
       },
-      toDetailRep() {
-        this.$router.push({ path: '/repaymentDetail' })
+      toDetailRep(orderNo) {
+        if (!orderNo) {
+          return false
+        }
+        this.$router.push({ path: '/repaymentDetail', query: { orderNo } })
+      },
+      // 还款列表查询
+      queryRepaymentList () {
+        queryRepaymentList({
+          // userId: this.userId,
+          userId: 'userId001',
+          sign: '123'
+        }).then(res => {
+          console.log(res)
+          if (res.success) {
+            this.repaymentList = res.data
+          }
+        }).catch((err) => {
+          console.log(err)
+        })
       }
     },
     mounted() {
+    },
+    computed: {
+      ...mapState({
+        userId: state => state.user.userId
+      })
     }
   }
 </script>

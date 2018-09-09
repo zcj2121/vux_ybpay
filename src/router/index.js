@@ -185,6 +185,19 @@ export const constantRouterMap = [
     name: 'repaymentDetail',
     meta: { title: '按期还款' },
     component: () => import('@/view/transaction/RepaymentDetail')
+  },
+  // 我的
+  {
+    path: '/cardManage',
+    name: 'cardManage',
+    meta: { title: '我的银行卡' },
+    component: () => import('@/view/user/CardManage')
+  },
+  {
+    path: '/userSecurity',
+    name: 'userSecurity',
+    meta: { title: '安全中心' },
+    component: () => import('@/view/user/UserSecurity')
   }
 ]
 

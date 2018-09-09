@@ -7,21 +7,25 @@
           <flexbox :gutter="15">
             <flexbox-item>
               <div class="pic-card">
-                <img src="../../../assets/img/idcard_face.png" width=100% height=100% alt="">
-                <div class="pic-scan">
+                <img v-if="imgs.face" :src="imgs.face" width=100% alt="">
+                <img v-else src="../../../assets/img/idcard_face.png" width=100% alt="">
+                <div class="pic-scan" @click="upBtnFileFace">
+                  <input class="file" ref="dicardFace" name="file" type="file" accept="image/*" @change="updateFace" style="display: none" />
                   <img src="../../../assets/img/scan.png" width=100% height=100% alt="">
                 </div>
               </div>
-              <div class="pic-name">点击开始识别正面 <a href="">照片面</a></div>
+              <div class="pic-name">点击开始识别正面 <a>照片面</a></div>
             </flexbox-item>
             <flexbox-item>
               <div class="pic-card">
-                <img src="../../../assets/img/idcard_back.png" width=100% height=100% alt="">
-                <div class="pic-scan">
+                <img v-if="imgs.back" :src="imgs.back" width=100% alt="">
+                <img v-else src="../../../assets/img/idcard_back.png" width=100% alt="">
+                <div class="pic-scan" @click="upBtnFileBack">
+                  <input class="file" ref="dicardBack" name="file" type="file" accept="image/*" @change="updateBack" style="display: none" />
                   <img src="../../../assets/img/scan.png" width=100% height=100% alt="">
                 </div>
               </div>
-              <div class="pic-name">点击开始识别背面 <a href="">照片面</a></div>
+              <div class="pic-name">点击开始识别背面 <a>照片面</a></div>
             </flexbox-item>
           </flexbox>
           <div class="pic-box-info"><x-icon type="ios-information"></x-icon><span>应国家监管要求，办理信贷业务需上传身份证照片，拍摄时请保证 身份证边框完整、字迹清晰、亮度均衡。 </span></div>
@@ -56,7 +60,7 @@
           </popup>
         </div>
       </div>
-      <x-button class="next-btn" type="info" link="/homeFace">下一步</x-button>
+      <x-button class="next-btn" type="primary" link="/homeFace">下一步</x-button>
     </div>
     <div class="footer">
     </div>
@@ -66,12 +70,17 @@
 <script>
   import ProgressBar from '@/components/ProgressBar'
   import { Flexbox, FlexboxItem, Divider, XInput, Group, XButton, Cell, CheckIcon, TransferDom, Popup } from 'vux'
+  import { ocrIdCard } from '@/api/homeInitial'
   export default {
-    data () {
+    data() {
       return {
         maskValue: '',
         isRead: false,
-        showread: false
+        showread: false,
+        imgs: {
+          face: '',
+          back: ''
+        }
       }
     },
     directives: {
@@ -90,11 +99,62 @@
       Popup
     },
     methods: {
-      clickRead () {
+      clickRead() {
         this.showread = true
       },
-      onItemClick () {
+      onItemClick() {
         console.log('on item click')
+      },
+      upBtnFileFace() {
+        const event = new MouseEvent('click')
+        this.$refs.dicardFace.dispatchEvent(event)
+      },
+      updateFace(e) {
+        const file = e.target.files[0] || e.dataTransfer.files[0]
+        if (file) {
+          // 本地预览
+          const reader = new FileReader()
+          reader.readAsDataURL(file)
+          reader.onloadend = () => {
+            this.imgs.face = reader.result
+          }
+          // 上传
+          const fd = new FormData()
+          fd.append('userId', this.$store.state.user.userId)
+          fd.append('idCardImage', file)
+          fd.append('returnPortrait', '0')
+          fd.append('sign', '')
+          ocrIdCard(fd).then(response => {
+            if (response) {
+              console.log(response)
+            }
+          }).catch(() => {
+          })
+        }
+      },
+      upBtnFileBack() {
+        const event = new MouseEvent('click')
+        this.$refs.dicardBack.dispatchEvent(event)
+      },
+      updateBack(e) {
+        const file = e.target.files[0] || e.dataTransfer.files[0]
+        const reader = new FileReader()
+        reader.readAsDataURL(file)
+        reader.onloadend = () => {
+          this.imgs.back = reader.result
+        }
+        // 上传
+        const fd = new FormData()
+        fd.append('userId', this.$store.state.user.userId)
+        fd.append('idCardImage', file)
+        fd.append('returnPortrait', '0')
+        fd.append('sign', '')
+        ocrIdCard(fd).then(response => {
+          if (response) {
+            console.log(response)
+          }
+        }).catch(() => {
+        })
       }
     }
   }
@@ -109,13 +169,19 @@
         .pic-box{
           .pic-card{
             position: relative;
-            border-radius: 0.4rem;
+            border-radius: 0.5rem;
             background: #f4f4f4;
+            overflow: hidden;
+            border: 0.05rem solid #efefef;
+            img{
+              width:100%;
+              height: auto;
+            }
             .pic-scan{
               position: absolute;
               width:25%;
-              right:15%;
-              bottom:20%;
+              right:10%;
+              bottom:0%;
             }
           }
         }
@@ -152,7 +218,7 @@
       .weui-cell__ft{
         .weui-btn{
           margin-left: 5px;
-          background:#ffb400;
+          background:#ffb400 !important;
         }
         .weui-btn:after{
           border-radius: 50px;
@@ -173,7 +239,7 @@
           padding-right: 0px;
           color: #ffb400;
           margin-left: 5px;
-          background:transparent;
+          background:transparent !important;
         }
         .weui-btn:after{
           border:none;
@@ -216,9 +282,9 @@
     }
     .next-btn{
       width:80%;
-      background: #41a1fd;
       margin-top:15px;
       border-radius: 4px;
+      font-size: 1rem;
     }
   }
 </style>
@@ -226,6 +292,24 @@
 <style lang="less" scoped rel="stylesheet/less">
   .home-idcard{
     .header{
+      .vux-flexbox-item{
+        width:4rem;
+        height: 8rem;
+        .pic-card{
+          width:100%;
+          height: 90%;
+          img{
+            width:100%;
+            height: 100%;
+          }
+          .pic-scan{
+            img{
+              width:100%;
+              height: 100%;
+            }
+          }
+        }
+      }
     }
     .content{
     }

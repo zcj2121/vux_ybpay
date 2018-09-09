@@ -41,3 +41,11 @@ export function validTradePwd(data) {
   })
 }
 
+// 借款结果
+export function noticeApplyLoanResult(data) {
+  return request({
+    url: 'orderApplyLoan/noticeApplyLoanResult',
+    data: Qs.stringify(data)
+  })
+}
+

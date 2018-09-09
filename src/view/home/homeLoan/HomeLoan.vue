@@ -311,7 +311,7 @@
               this.disabled = true
               if (response) {
                 if (response.returnCode === 'SUCCESS') {
-                  this.$router.push({ path: '/loginLanding' })
+                  this.$router.push({ path: '/loanSuccess', query: { order: response.data.orderId }})
                 } else {
                   this.$vux.toast.show({
                     type: 'cancel',

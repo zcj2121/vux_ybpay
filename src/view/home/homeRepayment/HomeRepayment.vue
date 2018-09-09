@@ -30,6 +30,7 @@
 
 <script>
   import { XButton, XInput, GroupTitle, Group, Cell, FormPreview } from 'vux'
+  import { latestPlansOfLoans } from '@/api/homeRepayment'
   export default {
     data() {
       return {
@@ -38,6 +39,7 @@
     watch: {
     },
     created() {
+      this.latestPlansOfLoan()
     },
     components: {
       XButton,
@@ -48,6 +50,25 @@
       FormPreview
     },
     methods: {
+      latestPlansOfLoan() {
+        latestPlansOfLoans({
+          userId: this.$store.state.user.userId,
+          sign: '123'
+        }).then(response => {
+          if (response) {
+            if (response.returnCode === 'SUCCESS') {
+              this.applyLoan()
+            } else {
+              this.$vux.toast.show({
+                type: 'cancel',
+                text: response.returnMessage
+              })
+            }
+          }
+        }).catch(() => {
+          this.disabled = false
+        })
+      },
       toNext() {
         this.$router.push({ path: '/repaymentCard' })
       }

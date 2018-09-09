@@ -19,13 +19,13 @@
     </div>
     <div class="content">
       <group class="cell-box-item">
-        <cell title="交易记录" is-link>
+        <cell title="交易记录" is-link @click.native="toTransaction">
           <img slot="icon" src="../assets/img/user_transaction_no.png">
         </cell>
-        <cell title="银行卡管理" is-link>
+        <cell title="银行卡管理" is-link @click.native="toCardManage">
           <img slot="icon" src="../assets/img/user_card.png">
         </cell>
-        <cell title="安全中心" is-link>
+        <cell title="安全中心" is-link @click.native="toSecurity">
           <img slot="icon" src="../assets/img/user_security.png">
         </cell>
       </group>
@@ -42,19 +42,29 @@
 </template>
 
 <script>
-  import { Cell, CellBox, CellFormPreview, Panel, Group, Radio } from 'vux'
+  import { Cell, CellBox, CellFormPreview, Panel, Group } from 'vux'
   export default {
     components: {
       Cell,
       CellBox,
       CellFormPreview,
       Panel,
-      Group,
-      Radio
+      Group
     },
-    data () {
+    data() {
       return {
         isLogin: false
+      }
+    },
+    methods: {
+      toTransaction() {
+        this.$router.push({ path: '/home/transaction' })
+      },
+      toCardManage() {
+        this.$router.push({ path: '/cardManage' })
+      },
+      toSecurity() {
+        this.$router.push({ path: '/userSecurity' })
       }
     }
   }

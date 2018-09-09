@@ -223,7 +223,7 @@
           padding-right: 0px;
           color: #ffb400;
           margin-left: 5px;
-          background:transparent;
+          background:transparent !important;
         }
         .weui-btn:after{
           border:none;

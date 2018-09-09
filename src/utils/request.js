@@ -16,8 +16,7 @@ const service = axios.create({
   // withCredentials: true,
   baseURL: changeUrl,
   method: 'post',
-  timeout: 15000,
-  cache: false
+  timeout: 15000
 })
 
 service.interceptors.request.use(config => {

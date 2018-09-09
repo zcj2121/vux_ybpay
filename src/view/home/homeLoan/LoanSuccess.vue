@@ -7,13 +7,13 @@
         <img src="../../../assets/img/loan_yes.png" alt="">
       </div>
       <div class="result-title">
-        {{resultTitle}}
+        提现成功
       </div>
       <div class="result-name">
-        {{resultName}}
+        ¥ {{resultMoney}}
       </div>
       <div class="result-info">
-        {{resultInfo}}
+        请关注招商银行卡(尾号{{resultCard}}）账户余额， 具体到账时间以银行为准
       </div>
     </div>
     <div class="footer">
@@ -31,13 +31,12 @@
 </template>
 
 <script>
-  import { XButton, XInput, GroupTitle, Group } from 'vux'
+  import { XButton } from 'vux'
   export default {
     data() {
       return {
-        resultTitle: '提现成功',
-        resultName: '¥ 20,000.00',
-        resultInfo: '请关注招商银行卡(尾号1234）账户余额， 具体到账时间以银行为准  '
+        resultMoney: this.$route.query.money,
+        resultCard: this.$route.query.card
       }
     },
     watch: {
@@ -45,14 +44,11 @@
     created() {
     },
     components: {
-      XButton,
-      XInput,
-      GroupTitle,
-      Group
+      XButton
     },
     methods: {
       back() {
-        this.$router.push({path: '/home'})
+        this.$router.push({ path: '/home' })
       }
     },
     mounted() {
