@@ -108,9 +108,7 @@
                 type: 'success',
                 text: '注册成功'
               })
-              setTimeout(() => {
-                this.$router.push({ path: '/loginLanding', query: { phone: this.form.phone }})
-              }, 1000)
+              this.$router.push({ path: '/loginLanding', query: { phone: this.form.phone }})
             } else {
               this.subDis = false
               this.$vux.toast.show({
@@ -293,7 +291,7 @@
           right: 0;
           .weui-btn{
             padding: 10px 5px;
-            font-size: 0.4rem;
+            font-size: 0.8rem;
             line-height: 1rem;
           }
         }

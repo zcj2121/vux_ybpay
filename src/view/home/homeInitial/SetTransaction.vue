@@ -39,6 +39,8 @@
 
 <script>
   import { XButton, XInput, GroupTitle, Group, TransferDom, Popup } from 'vux'
+  import { setTradePwd } from '@/api/homeInitial'
+
   export default {
     data () {
       return {
@@ -85,7 +87,7 @@
         }
         if (curVal.length === 6) {
           if (curVal === this.password) {
-            this.$router.push({name: 'accreditBook', query: {}})
+            this.toNext()
           } else {
             this.errorShow = true
             this.pwdTitle = '为了保证交易安全，请设置交易密码'
@@ -105,6 +107,40 @@
       }
     },
     methods: {
+      toNext() {
+        setTradePwd({
+          userId: this.$store.state.user.userId,
+          tradePwd: this.confirmpwd,
+          sign: '123'
+        }).then(response => {
+          if (response) {
+            if (response.returnCode == 'SUCCESS') {
+              this.$router.push({ name: 'accreditBook', query: {}})
+            } else {
+              this.$vux.toast.show({
+                type: 'cancel',
+                text: response.returnMessage
+              })
+              this.errorShow = true
+              this.pwdTitle = '为了保证交易安全，请设置交易密码'
+              this.password = ''
+              this.confirmpwd = ''
+              this.setShow = true
+              this.confirmShow = false
+            }
+          }
+        }).catch(() => {
+          this.pwdTitle = '为了保证交易安全，请设置交易密码'
+          this.password = ''
+          this.confirmpwd = ''
+          this.setShow = true
+          this.confirmShow = false
+          this.$vux.toast.show({
+            type: 'cancel',
+            text: '网络异常'
+          })
+        })
+      },
       focus () {
         this.$refs.pwd.focus()
       },

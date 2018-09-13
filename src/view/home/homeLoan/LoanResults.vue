@@ -15,10 +15,8 @@
       <div class="result-info">
         {{resultInfo}}
       </div>
-      <x-button v-if="isShow" class="video-btn" type="primary" @click.native="result('ok')">无款</x-button>
-      <x-button v-if="isShow" class="video-btn" type="primary" @click.native="result('no')">失败</x-button>
       <x-button v-if="putShow" class="video-btn" type="primary" link="/home">返回首页</x-button>
-      <x-button v-if="confirmShow" class="video-btn" type="primary" @click.native="retry">重试</x-button>
+      <x-button v-if="confirmShow" class="video-btn" type="primary" link="/home">重新申请</x-button>
     </div>
     <div class="footer">
     </div>
@@ -27,7 +25,7 @@
 
 <script>
   import { XButton, XInput, GroupTitle, Group } from 'vux'
-  import { noticeApplyLoanResult } from '@/api/home'
+  import { queryLoanResult } from '@/api/home'
   export default {
     data() {
       return {
@@ -38,15 +36,15 @@
         putShow: false,
         confirmShow: false,
         img: 'loan_ing.png',
-        second: 30
+        second: 60
       }
     },
     watch: {
       second(val) {
-        console.log(val)
-        // if (val === 22) {
-        //   this.$router.push({ path: '/loanSuccess' })
-        // }
+        // console.log(val)
+        if (val === 1) {
+          this.result('ok')
+        }
       }
     },
     created() {
@@ -59,21 +57,25 @@
     },
     methods: {
       backResults() {
-        noticeApplyLoanResult({
-          userId: this.$store.state.user.userId,
+        queryLoanResult({
           orderId: this.$route.query.order
         }).then(response => {
           if (response) {
             if (response.returnCode === 'SUCCESS') {
-              clearInterval(this.backResults)
-              if (response.data.code === '1') {
-                this.$router.push({ path: '/loanSuccess', query: { money: response.data.money, card: response.data.card }})
-              } else if (response.data.code == '2') {
-                this.result('ok')
-              } else if (response.data.code == '3') {
+              if (response.data.status === '4') {
+                clearInterval(this._inter)
+                clearInterval(this._backinter)
+                this.$router.push({ path: '/loanSuccess', query: { money: response.data.loanAmount, card: response.data.eccbankNo }})
+              } else if (response.data.status === '2') {
+                // this.result('ok')
+              } else if (response.data.status === '3') {
+                clearInterval(this._inter)
+                clearInterval(this._backinter)
                 this.result('no')
+                this.resultName = `失败原因：  ${response.returnMessage}`
               }
             } else {
+              this.result('no')
               this.$vux.toast.show({
                 type: 'cancel',
                 text: response.returnMessage
@@ -98,16 +100,17 @@
         this.second = ''
         this.clearTime()
         if (val === 'ok') {
-          this.resultTitle = '手速不够快啊，好几亿被抢走了'
-          this.resultName = '明日请早哦'
-          this.img = 'loan_null.png'
+          this.second = 60
+          this.resultTitle = '您的借款正在处理中'
+          this.resultName = 's 后将返回结果，请耐心等待'
+          this.img = 'loan_ing.png'
           this.resultInfo = ''
-          this.isShow = false
-          this.putShow = true
+          this.isShow = true
+          this.putShow = false
           this.confirmShow = false
         } else if (val === 'no') {
           this.resultTitle = '提现失败'
-          this.resultName = '失败原因：  XXXXX'
+          // this.resultName = '失败原因：  XXXXX'
           this.img = 'loan_no.png'
           this.resultInfo = ''
           this.isShow = false
@@ -115,20 +118,24 @@
           this.confirmShow = true
         }
       },
-      retry() {
-        this.second = 30
-        this.resultTitle = '您的借款正在处理中'
-        this.resultName = 's 后将返回结果，请耐心等待'
-        this.img = 'loan_ing.png'
-        this.resultInfo = ''
-        this.isShow = true
-        this.putShow = false
-        this.confirmShow = false
+      interval() {
+        this._inter = setInterval(() => {
+          this.intIime()
+        }, 1000)
+      },
+      backInterval() {
+        this._backinter = setInterval(() => {
+          this.backResults()
+        }, 5000)
       }
     },
     mounted() {
-      setInterval(this.intIime, 1000)
-      setInterval(this.backResults, 5000)
+      this.interval()
+      this.backInterval()
+    },
+    beforeDestroy() {
+      clearInterval(this._inter)
+      clearInterval(this._backinter)
     }
   }
 </script>
@@ -193,6 +200,7 @@
         width:80%;
         background: #41a1fd;
         margin-top:6rem;
+        font-size: 1rem;
       }
     }
     .footer{

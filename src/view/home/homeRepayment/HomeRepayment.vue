@@ -2,17 +2,17 @@
   <div class="repayment-detail">
     <div class="header">
       <div class="header-title">剩余未还本金(元)</div>
-      <div class="header-money">1,000.00</div>
-      <div class="header-info">共<span>1笔借款</span>未结清</div>
+      <div class="header-money">{{remainCapital}}</div>
+      <div class="header-info">共<span>{{loanTimes}}笔借款</span>未结清</div>
     </div>
     <div class="content">
       <div class="form-box">
-        <div class="form-box-item">
+        <div class="form-box-item" v-for="(item,index) in toRepayList" :key="index">
           <a @click="toNext">
             <div class="item-header">
               <label for="">
-                <div class="other-title">05月20日应还 (元)</div>
-                <div class="other-money">888.88</div>
+                <div class="other-title">{{item.planRepayTime}}日应还 (元)</div>
+                <div class="other-money">{{item.totalAmount}}</div>
               </label>
               <span>
               <div class="weui-cell__ft"></div>
@@ -20,7 +20,7 @@
             </div>
           </a>
         </div>
-        <div class="item-info">还款日当天将对您尾号8888的银行卡进行扣款 </div>
+        <div class="item-info">还款日当天将对您尾号{{date}}的银行卡进行扣款 </div>
       </div>
     </div>
     <div class="footer">
@@ -30,16 +30,22 @@
 
 <script>
   import { XButton, XInput, GroupTitle, Group, Cell, FormPreview } from 'vux'
-  import { latestPlansOfLoans } from '@/api/homeRepayment'
+  import { latestPlansOfLoans, getEnd4OfMainCard } from '@/api/homeRepayment'
   export default {
     data() {
       return {
+        remainCapital:0,
+        loanTimes:0,
+        toRepayList:[],
+        date:''
       }
     },
     watch: {
     },
     created() {
-      this.latestPlansOfLoan()
+      //this.latestPlansOfLoan()
+      this.get_repay()
+      this.cut_payment()
     },
     components: {
       XButton,
@@ -50,27 +56,60 @@
       FormPreview
     },
     methods: {
-      latestPlansOfLoan() {
+      get_repay(){
         latestPlansOfLoans({
           userId: this.$store.state.user.userId,
           sign: '123'
-        }).then(response => {
-          if (response) {
-            if (response.returnCode === 'SUCCESS') {
-              this.applyLoan()
-            } else {
-              this.$vux.toast.show({
-                type: 'cancel',
-                text: response.returnMessage
-              })
-            }
+        }).then(res => {
+          console.log(res)
+          if (res.returnCode == 'SUCCESS') {
+            this.remainCapital = res.data.remainCapital  //剩余未还本金
+            this.loanTimes = res.data.loanTimes  //共N笔未结清借款
+            this.toRepayList = res.data.toRepayList  //最近待还借款列表
           }
-        }).catch(() => {
-          this.disabled = false
+        }).catch((err) => {
+          console.log(err)
         })
       },
+      cut_payment(){
+        getEnd4OfMainCard({
+          userId: this.$store.state.user.userId,
+          sign: '123'
+        }).then(res => {
+          if (res.returnCode == 'SUCCESS') {
+            this.date = res.data   //银行尾号
+          }
+        }).catch((err) => {
+          console.log(err)
+        })
+      },
+      // latestPlansOfLoan() {
+      //   latestPlansOfLoans({
+      //     userId: this.$store.state.user.userId,
+      //     sign: '123'
+      //   }).then(response => {
+      //     if (response) {
+      //       if (response.returnCode === 'SUCCESS') {
+      //         this.applyLoan()
+      //       } else {
+      //         this.$vux.toast.show({
+      //           type: 'cancel',
+      //           text: response.returnMessage
+      //         })
+      //       }
+      //     }
+      //   }).catch(() => {
+      //     this.disabled = false
+      //   })
+      // },
       toNext() {
-        this.$router.push({ path: '/repaymentCard' })
+        this.$router.push({
+          path: '/homeRepaymentDetail',
+          query: {
+            toRepayList: this.toRepayList,
+            date:this.date
+          }
+        })
       }
     },
     mounted() {

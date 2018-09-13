@@ -1,5 +1,6 @@
 <template>
   <div id="app">
+    <loading v-model="aLoading"></loading>
     <transition name="transitionRouter" class="router">
       <router-view class="r"></router-view>
     </transition>
@@ -7,14 +8,24 @@
 </template>
 
 <script>
-export default {
-  name: 'app',
-  data() {
-    return {
-      aaa: '123'
+  import { Loading } from 'vux'
+  import { mapState } from 'vuex'
+  export default {
+    name: 'app',
+    data() {
+      return {
+        loadText: 'loading'
+      }
+    },
+    components: {
+      Loading
+    },
+    computed: {
+      ...mapState({
+        aLoading: state => state.app.aLoading
+      })
     }
   }
-}
 </script>
 
 <style lang="less">

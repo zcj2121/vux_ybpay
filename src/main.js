@@ -6,7 +6,7 @@ import NProgress from 'nprogress' // Progress 进度条
 import 'nprogress/nprogress.css'// Progress 进度条样式
 import App from './App'
 import { LoadingPlugin, ToastPlugin } from 'vux'
-import { getToken } from '@/utils/auth'
+import { getToken, setToken } from '@/utils/auth'
 
 import * as filters from './filters' // global filters
 
@@ -14,8 +14,8 @@ Vue.use(ToastPlugin)
 Vue.use(LoadingPlugin)
 
 // 移动端点击延迟
-// const FastClick = require('fastclick')
-// FastClick.attach(document.body)
+const FastClick = require('fastclick')
+FastClick.attach(document.body)
 
 Object.keys(filters).forEach(key => {
   Vue.filter(key, filters[key])
@@ -23,12 +23,19 @@ Object.keys(filters).forEach(key => {
 
 Vue.config.productionTip = false
 
-// const whiteList = ['/login', '/loginLanding', '/loginForget', '/loginRegister', '/loginReset'] // 不重定向白名单
+const whiteList = ['/login', '/loginLanding', '/loginForget', '/loginRegister', '/loginReset'] // 不重定向白名单
 router.beforeEach((to, from, next) => {
+  // alert('123123')
   NProgress.start()
-  // Vue.$vux.loading.show({
-  //   text: ''
-  // })
+  next()
+  if (to.path === '/homeFace') {
+    const localData = JSON.parse(localStorage.getItem('userData'))
+    console.log(localData)
+    setToken(localData.token)
+    store.commit('SET_TOKEN', localData.token)
+    store.commit('SET_PHONE', localData.phone)
+    store.commit('SET_USER_ID', '123')
+  }
   // if (getToken()) {
   //   if (to.path === '/login') {
   //     next({ path: '/' })
@@ -40,8 +47,7 @@ router.beforeEach((to, from, next) => {
   //   if (whiteList.indexOf(to.path) !== -1) {
   //     next()
   //   } else {
-  //     // next('/Login')
-  //     console.log(to)
+  //     // next('/login')
   //     next()
   //     NProgress.done()
   //   }
@@ -62,7 +68,6 @@ router.beforeEach((to, from, next) => {
 
 router.afterEach(() => {
   NProgress.done()
-  Vue.$vux.loading.hide()
 })
 
 /* eslint-disable no-new */
@@ -73,5 +78,5 @@ new Vue({
 }).$mount('#app-box')
 
 Object.keys(filters).forEach((key) => {
-  Vue.filter(key, filters[key]);
+  Vue.filter(key, filters[key])
 })

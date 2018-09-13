@@ -2,7 +2,7 @@
   <div class="repayment-detail">
     <div class="header">
       <div class="header-title">剩余未还本金(元)</div>
-      <div class="header-money">888.88</div>
+      <div class="header-money">{{capital}}</div>
     </div>
     <div class="content">
       <div class="con-title">请选择还款方式</div>
@@ -59,22 +59,32 @@
 </template>
 
 <script>
+  import { queryUserBindCardList , bindingPayActive , confirmPayActive , smsResend} from '@/api/homeRepayment'
   import { XButton, XInput, GroupTitle, Group, Cell, FormPreview, PopupPicker, CellBox, Selector, PopupRadio, Popup, TransferDom } from 'vux'
   export default {
     data() {
       return {
         second: 60,
         time: 0,
-        list: [{key: 'gd', value: '招商银行(尾号8888)'}, {key: 'gx', value: '招商银行(尾号6666)'}],
+        list: [],
         option1: '',
         showPwd: false,
         sendDis: false,
-        verifyCode: ''
+        verifyCode: '',
+        bankName:"",
+        cutHead:'',
+        cutFoot:"",
+        capital:0,
+        loanOrderNo:'',
+        repayAmount:0,
+        orderNo:""
       }
     },
     watch: {
     },
     created() {
+      this.CardList()
+      this.capitalAmount()
     },
     directives: {
       TransferDom
@@ -93,15 +103,100 @@
       Popup
     },
     methods: {
+      cut(){
+
+      },
       toNext() {
-        this.$router.push({ path: '/repaymentResults' })
+        if(this.verifyCode !== ''){
+          confirmPayActive({
+            orderNo:this.orderNo,   //还款订单号
+            verifyCode:this.verifyCode,   //短信验证码
+            sign:'123'   //数据签名
+          }).then(res=>{
+            console.log(res)
+            if(res.returnCode == 'SUCCESS'){
+             this.$router.push({
+                path: '/repaymentResults',
+                query: { 
+                  returnCode: res.returnCode
+                }
+              })
+            }else if(res.returnCode == 'DEDUCT_MONEY_FAIL'){
+              this.$router.push({
+                path: '/repaymentResults',
+                query: { 
+                  returnCode: res.returnCode,
+                  returnMessage:res.returnMessage
+                }
+              })
+            }
+            else if(res.returnCode == 'VERIFYCODE_ERR'){
+              this.$vux.toast.show({
+                type: 'cancel',
+                text: '验证码输入错误，请重新输入'
+              })
+            }
+          }).then(err=>{
+            console.log(err)
+          })
+        }else{
+          this.$vux.toast.show({
+            type: 'cancel',
+            text: '验证码不能为空'
+          })
+        }
       },
       showPwdbox() {
         this.showPwd = true
+        this.start()
+        bindingPayActive({
+          repayAmount:this.repayAmount,  //还款金额
+          loanOrderNo:this.loanOrderNo,  //借款订单号
+          cardTop6:this.cutHead,  //银行卡前六位
+          cardEnd4:this.cutFoot,  //银行卡后四位
+          callBackUrl:"http://www.duolabao.com/",  //回调多啦宝地址
+          sign:'123'  //数字签名
+        }).then(res=>{
+            console.log(res)
+            this.orderNo = res.data.orderNo  //还款订单号
+        }).catch(err=>{
+          console.log(err)
+        })
       },
+      capitalAmount(){
+        this.capital = this.$route.query.capitalAmount
+        this.loanOrderNo = this.$route.query.loanOrderNo
+        this.repayAmount = this.$route.query.repayAmount
+      },
+      CardList(){
+        queryUserBindCardList({
+          userId: this.$store.state.user.userId,
+          sign: '123'
+        }).then(res => {
+          if (res.returnCode == 'SUCCESS') {
+            res.data.map((item,index)=>{
+              this.bankName = item.bankName
+              this.cutHead = item.bankCardNo.substring(0,6)
+              this.cutFoot = item.bankCardNo.substring(15,19)
+              this.list.push( {key: 'gd', value: this.bankName+'(尾号)'+this.cutFoot})
+            })
+          }
+        }).catch((err) => {
+          console.log(err)
+        })
+      },
+     
       // 发送验证码
       sendCode() {
         this.start()
+        smsResend({
+          orderNo:this.orderNo, //还款订单号
+          sign:'123' //数据签名
+        }).then(res=>{
+            console.log(res)
+        }).catch(err=>{
+          console.log(err)
+        })
       },
       start() {
         this.time = this.second

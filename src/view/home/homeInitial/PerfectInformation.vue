@@ -6,13 +6,13 @@
     <div class="content">
       <group>
         <div class="weui-cell weui-cell--title"><x-icon type="ios-information" size="30"  class="cell-x-icon"></x-icon> 请填写真实有效信息，以免影响您的申请</div>
-        <popup-radio title="学历" :options="educationOptions" v-model="form.education" placeholder="placeholder"></popup-radio>
-        <popup-radio title="职业" :options="occupationOptions" v-model="form.occupation" placeholder="placeholder"></popup-radio>
-        <popup-radio title="月收入" :options="incomeOptions" v-model="form.income" placeholder="placeholder"></popup-radio>
+        <popup-radio title="学历" :options="educationOptions" v-model="form.education" placeholder="请选择学历"></popup-radio>
+        <popup-radio title="职业" :options="occupationOptions" v-model="form.occupation" placeholder="请选择职业"></popup-radio>
+        <popup-radio title="月收入" :options="incomeOptions" v-model="form.income" placeholder="请选择月收入"></popup-radio>
       </group>
       <group>
-        <popup-radio title="有无信用卡" :options="ifcreditOptions" v-model="form.ifcredit" placeholder="placeholder"></popup-radio>
-        <x-input title="信用卡号" class="weui-vcode" v-model="form.credit">
+        <popup-radio title="有无信用卡" :options="ifcreditOptions" v-model="form.ifcredit" placeholder="请选择有无信用卡"></popup-radio>
+        <x-input title="信用卡号" class="weui-vcode" placeholder="请输入信用卡号" v-model="form.credit" v-if="form.ifcredit == '1'">
           <x-button slot="right" type="primary" mini style="border-radius: 50px;">支持银行</x-button>
         </x-input>
       </group>
@@ -42,48 +42,48 @@
     data () {
       return {
         educationOptions: [{
-          key: '0',
+          key: '1',
           value: '硕士及以上'
         }, {
-          key: '1',
+          key: '2',
           value: '本科'
         }, {
-          key: '2',
+          key: '3',
           value: '大专'
         }, {
-          key: '3',
+          key: '4',
           value: '中专/高中及以下'
         }],
         occupationOptions: [{
-          key: '0',
+          key: '1',
           value: '上班族'
         }, {
-          key: '1',
+          key: '2',
           value: '生意人'
         }, {
-          key: '2',
+          key: '3',
           value: '自由职业'
         }, {
-          key: '3',
+          key: '4',
           value: '学生党'
         }, {
-          key: '4',
+          key: '5',
           value: '其他'
         }],
         incomeOptions: [{
-          key: '0',
+          key: '1',
           value: '3000元及以下'
         }, {
-          key: '1',
+          key: '2',
           value: '3001-5000元'
         }, {
-          key: '2',
+          key: '3',
           value: '5001-10000元'
         }, {
-          key: '3',
+          key: '4',
           value: '10001-20000元'
         }, {
-          key: '4',
+          key: '5',
           value: '20001元及以上'
         }],
         ifcreditOptions: [{
@@ -94,36 +94,36 @@
           value: '无信用卡'
         }],
         relationOptions: [{
-          key: '0',
+          key: '1',
           value: '配偶'
         }, {
-          key: '1',
+          key: '2',
           value: '父母'
         }, {
-          key: '2',
+          key: '3',
           value: '兄弟姐妹'
         }, {
-          key: '3',
+          key: '4',
           value: '子女'
         }, {
-          key: '4',
+          key: '5',
           value: '同事'
         }, {
-          key: '5',
+          key: '6',
           value: '朋友'
         }, {
-          key: '6',
+          key: '7',
           value: '同学'
         }, {
-          key: '7',
+          key: '8',
           value: '其他'
         }],
         isRead: false,
         showread: false,
         form: {
-          education: '1',
-          occupation: '1',
-          income: '1',
+          education: '',
+          occupation: '',
+          income: '',
           ifcredit: '1',
           credit: '',
           linkman1: {
@@ -176,7 +176,7 @@
     .content{
       margin-bottom: 15px;
       .weui-cell{
-        font-size: 1rem;
+        font-size: 0.9rem;
       }
       .weui-cell--title{
         font-size:0.8rem;
@@ -269,6 +269,7 @@
       background: #41a1fd;
       margin-top:15px;
       border-radius: 4px;
+      font-size: 1rem;
     }
   }
 </style>

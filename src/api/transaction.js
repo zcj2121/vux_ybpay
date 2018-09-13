@@ -61,3 +61,10 @@ export function queryLatestOnePlanOfLoan(data) {
     data: Qs.stringify(data)
   })
 }
+// 查询借款记录表
+export function getOrderApplyLoanList(data) {
+  return request({
+    url: '/orderApplyLoan/getOrderApplyLoanList',
+    data: Qs.stringify(data)
+  })
+}

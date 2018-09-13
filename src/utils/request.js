@@ -1,11 +1,8 @@
-import { ToastPlugin } from 'vux'
-
 import axios from 'axios'
 import store from '@/store'
 import { getToken } from '@/utils/auth'
 
 let changeUrl
-
 if (process.env.NODE_ENV === 'development') {
   changeUrl = '/yeepay'
 } else {
@@ -23,14 +20,17 @@ service.interceptors.request.use(config => {
   // if (store.getters.token) {
   //   config.headers['X-Token'] = getToken() // 让每个请求携带token-- ['X-Token']为自定义key 请根据实际情况自行修改
   // }
+  store.commit('loadingStar')
   return config
 }, error => {
+  store.commit('loadingEnd')
   console.log(error) // for debug
 })
 
 // respone拦截器
 service.interceptors.response.use(
   response => {
+    store.commit('loadingEnd')
     const res = response.data
     // if (res.returnCode) {
     //   if (res.returnCode === 'SUCCESS') {
@@ -46,10 +46,7 @@ service.interceptors.response.use(
     return res
   },
   error => {
-    ToastPlugin.$vux.toast({
-      text: '服务器异常',
-      type: 'cancel'
-    })
+    store.commit('loadingEnd')
     return Promise.reject(error)
   }
 )

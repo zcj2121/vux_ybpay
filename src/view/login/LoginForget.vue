@@ -89,9 +89,7 @@
                 type: 'success',
                 text: '验证成功'
               })
-              setTimeout(() => {
-                this.$router.push({ path: '/loginReset', query: { phone: trim(this.form.phone), verifyCode: this.form.verifyCode, userChannel: this.form.userChannel }})
-              }, 1000)
+              this.$router.push({ path: '/loginReset', query: { phone: trim(this.form.phone), verifyCode: this.form.verifyCode, userChannel: this.form.userChannel }})
             } else {
               this.subDis = false
               this.$vux.toast.show({
@@ -240,7 +238,7 @@
           right: 0;
           .weui-btn{
             padding: 10px 5px;
-            font-size: 0.4rem;
+            font-size: 0.8rem;
             line-height: 1rem;
           }
         }

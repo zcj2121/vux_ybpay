@@ -8,10 +8,11 @@
     </div>
     <div class="content">
       <group class="cell-box-item">
-        <cell title="招商银行（尾号4498）">
+        <cell :title = "this.cartList">
           <img slot="icon" src="../../assets/img/user_bank_zs.png">
           <div>
-            <span class="cell-btn vux-1px">主卡</span>
+            <span class="cell-btn vux-1px" v-if="this.mainCard==1">主卡</span>
+            <span class="cell-btn vux-1px" v-if="this.mainCard==2">非主卡</span>
           </div>
         </cell>
       </group>
@@ -20,6 +21,7 @@
 </template>
 
 <script>
+  import { queryUserBindCardList } from '@/api/user'
   import { Cell, Group } from 'vux'
   export default {
     components: {
@@ -28,9 +30,30 @@
     },
     data() {
       return {
+        cartList:'',
+        cartFoot:'',
+        mainCard:0
       }
     },
+    created(){
+      this.queryUserBindCardList()
+    },
     methods: {
+      queryUserBindCardList(){
+        queryUserBindCardList({
+          userId: this.$store.state.user.userId,  //用户Id
+          sign:"123"  //签名结果
+        }).then(res=>{
+          console.log(res.data)
+          res.data.map((item,index)=>{
+            this.cutFoot = item.bankCardNo.substring(15,19)
+            this.cartList = item.bankName + "(尾号"+this.cutFoot+")"
+            this.mainCard = item.mainCard
+          })
+        }).then(err=>{
+          console.log(err)
+        })
+      }
     }
   }
 </script>

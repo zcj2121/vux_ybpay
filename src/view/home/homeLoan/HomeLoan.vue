@@ -50,7 +50,7 @@
               <div class="pwd-box-top">
                 <div class="pwd-box-title">请输入交易密码</div>
                 <input ref="pwd" type="password" maxlength="6" v-model="tradePwd"  style="position: absolute;z-index: -1;left:-100%;opacity: 0"/>
-                <ul class="pwd-wrap" @click="focus">
+                <ul class="pwd-wrap" id="pwdclick" @click="focus">
                   <li><i v-if="msgLength > 0"></i></li>
                   <li><i v-if="msgLength > 1"></i></li>
                   <li><i v-if="msgLength > 2"></i></li>
@@ -215,11 +215,12 @@
         validTradePwd({
           userId: this.$store.state.user.userId,
           tradePwd: this.tradePwd,
-          sign: ''
+          sign: '123'
         }).then(response => {
           if (response) {
             if (response.returnCode === 'SUCCESS') {
-              this.applyLoan()
+              this.applyLoanFun()
+              this.showPwd = false
             } else {
               this.tradePwd = ''
               this.$vux.toast.show({
@@ -264,7 +265,7 @@
             productCode: this.$store.state.user.productCode, // 产品code
             loanAmount: this.form.money, // 借款金额
             loanProposite: this.form.purpose, // 借款用途
-            repayType: this.form.mode, // 还款方式
+            repayModel: this.form.mode, // 还款方式
             repayTotalNum: this.form.periods // 还款期数
           }).then(response => {
             if (response) {
@@ -305,13 +306,13 @@
               repayModel: this.form.mode, // 还款方式
               repayTotalNum: this.form.periods, // 还款期数
               bindIdNo: this.form.account, // 还款银行
-              callbackUrl: '', // 放款成功回调地址
-              sign: '' // 签名结果
+              callbackUrl: 'http://www.baidu.com', // 放款成功回调地址
+              sign: 'sign' // 签名结果
             }).then(response => {
               this.disabled = true
               if (response) {
                 if (response.returnCode === 'SUCCESS') {
-                  this.$router.push({ path: '/loanSuccess', query: { order: response.data.orderId }})
+                  this.$router.push({ path: '/loanResults', query: { order: response.data.orderId }})
                 } else {
                   this.$vux.toast.show({
                     type: 'cancel',
@@ -331,15 +332,11 @@
         }
       },
       showPwdbox() {
-        this.applyLoanFun()
         this.showPwd = true
         this.focus()
       },
       focus() {
-        setTimeout(() => {
-          this.$refs['pwd'].focus()
-        }, 100)
-        console.log(this.$refs)
+        this.$refs['pwd'].focus()
       }
     }
   }

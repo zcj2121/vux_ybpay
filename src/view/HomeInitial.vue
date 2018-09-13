@@ -50,12 +50,13 @@
   import { XButton, Flexbox, FlexboxItem, Divider, XInput, Grid, GridItem, GroupTitle, Group } from 'vux'
   import { mapState } from 'vuex'
   import { queryMyAccount } from '@/api/home'
+  import BMap from 'BMap'
   export default {
     data() {
       return {
         maskValue: null,
         enterText: '',
-        statu: '3', // 1: 未登陆/未授信  2：正常  3：逾期
+        statu: '1', // 1: 未登陆/未授信  2：正常  3：逾期
         conActive: 3,
         allMoney: '',
         useMoney: '',
@@ -103,6 +104,8 @@
               } else if (response.data.isOverdue == '2') { // 逾期
                 this.statu = '3'
               }
+            } else {
+              this.statu = '2'
             }
           }
         }).catch(() => {
@@ -111,6 +114,21 @@
       },
       toLoan() {
         this.$router.push({ path: '/homeLoan', query: { money: this.useMoney }})
+      },
+      ready() {
+        var geolocation = new BMap.Geolocation()
+        geolocation.getCurrentPosition(function(r) {
+          if (this.getStatus() == BMAP_STATUS_SUCCESS) {
+            const myGeo = new BMap.Geocoder()
+            myGeo.getLocation(new BMap.Point(r.point.lng, r.point.lat), data => {
+              if (data.addressComponents) {
+                const result = data.addressComponents
+                const panel = `省份：${result.province}\n 城市：${result.city}\n 所属区：${result.district}\n 街道：${result.street}${result.streetNumber}\n 经度：${r.point.lat}\n 纬度：${r.point.lng}`
+                alert(panel)
+              }
+            })
+          }
+        })
       }
     },
     mounted() {
@@ -119,6 +137,8 @@
       } else {
         this.statu = '1'
       }
+      this.ready()
+      let aaa = JSON.parse(localStorage.getItem('userData'))
     },
     computed: {
       ...mapState({

@@ -1,5 +1,5 @@
 <template>
-  <div class="phone-validate">
+  <div class="taobao-validate">
     <div class="header vux-1px-b">
       <progress-bar class="vux-1px-b" isActive="2"></progress-bar>
     </div>
@@ -8,11 +8,11 @@
         <div class="phone-img">
           <img src="../../../assets/img/home_no.png" alt="">
         </div>
-        <div class="phone-title">手机号认证</div>
+        <div class="phone-title">淘宝认证</div>
       </div>
     </div>
     <div class="footer">
-      <x-button class="next-btn" type="info" @click.native="toPhoneValidate">去授权</x-button>
+      <x-button class="next-btn" type="info" @click.native="toValidate" link="/perfectInformation">去授权</x-button>
     </div>
   </div>
 </template>
@@ -20,11 +20,11 @@
 <script>
   import ProgressBar from '@/components/ProgressBar'
   import { Group, XButton, querystring } from 'vux'
-  import { creditMobileCertificate } from '@/api/homeInitial'
-  import axios from 'axios'
+  import { getGxbToken, creditDsCertificate } from '@/api/homeInitial'
   export default {
-    data() {
+    data () {
       return {
+        calltoken: ''
       }
     },
     components: {
@@ -33,23 +33,44 @@
       Group
     },
     methods: {
-      toPhoneValidate() {
-        window.location.href = 'http://tx.tcredit.com/m/contacts/index.html#/?appId=3fbd2a7654564a9b99044117784b2e56&urlType=2&mobile=' + this.$store.state.user.phone + '&name=' + this.$store.state.user.trueName + '&idcard=' + this.$store.state.user.card + '&callBackUrl=' + location.href
+      // 获取 公信宝 token
+      callToken() {
+        getGxbToken({
+          userId: this.$store.state.user.userId,
+          authItem: '1',
+          sign: '123'
+        }).then(response => {
+          if (response) {
+            if (response.returnCode == 'SUCCESS') {
+              this.calltoken = response.data.token
+            } else {
+              this.$vux.toast.show({
+                type: 'cancel',
+                text: response.returnMessage
+              })
+            }
+          }
+        }).catch(() => {
+          this.$vux.toast.show({
+            type: 'cancel',
+            text: '网络异常'
+          })
+        })
       },
-      clickRead() {
-        this.showread = true
-      },
-      onItemClick() {
+      toValidate() {
+        if (this.callToken) {
+          window.location.href = 'https://prod.gxb.io/v2/auth?token=' + this.calltoken + '&returnUrl=' + encodeURIComponent(((location.href).split('?'))[0] + '?calltoken=' + this.calltoken)
+        }
       },
       toNext(val) {
-        creditMobileCertificate({
-          authOperatorTid: val,
+        creditDsCertificate({
+          authDsToken: val,
           creditOrderNo: '20180824orderno',
           sign: '123'
         }).then(response => {
           if (response) {
             if (response.returnCode == 'SUCCESS') {
-              this.$router.push({ name: 'taoBaoValidate', query: {}})
+              this.$router.push({ name: 'perfectInformation', query: { creditOrderNo: response.data.creditOrderNo }})
             } else {
               this.$vux.toast.show({
                 type: 'cancel',
@@ -67,37 +88,36 @@
     },
     created() {
       let urlData = querystring.parse(window.location.search)
-      if (urlData.status) {
-        if (urlData.status == '10009') {
-          this.toNext(urlData.tid)
+      if (urlData.success) {
+        if (urlData.success == '1') {
+          this.toNext(urlData.calltoken)
         } else {
+          this.callToken()
           this.$vux.toast.show({
             type: 'cancel',
-            text: '手机号认证失败，请重试'
+            text: '电商认证失败，请重试'
           })
         }
+      } else {
+        this.callToken()
       }
-      console.log(this.$store.state.user.userId)
     }
   }
 </script>
 
 <style lang="less" rel="stylesheet/less">
-  .phone-validate{
+  .taobao-validate{
     .header{
     }
-
   }
 </style>
 
 <style lang="less" scoped rel="stylesheet/less">
-  .phone-validate{
+  .taobao-validate{
     .header{
     }
     .content{
-      overflow: hidden;
       .phone-box{
-        width: 100%;
         padding-top:5rem;
         margin:auto;
         text-align: center;

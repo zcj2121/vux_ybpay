@@ -11,7 +11,7 @@
         {{statu? '还款成功': '还款失败'}}
       </div>
       <div class="result-name" v-if="!statu">
-        失败原因：  XXXXX
+        失败原因：  {{returnMessage}}
       </div>
       <x-button v-if="statu" class="video-btn" type="primary" @click.native="backHome">完成</x-button>
       <x-button v-else class="video-btn" type="primary" @click.native="back">再次还款</x-button>
@@ -29,10 +29,12 @@
   export default {
     data () {
       return {
-        statu: true
+        statu: true,
+        returnMessage:""
       }
     },
     created () {
+      this.succOrErr()
     },
     components: {
       XButton,
@@ -41,8 +43,17 @@
       Group
     },
     methods: {
+      succOrErr(){
+        if(this.$route.query.returnCode == 'DEDUCT_MONEY_FAIL'){
+          this.returnMessage = this.$route.query.returnMessage
+          this.statu = false
+        }
+        else if(this.$route.query.returnCode == 'SUCCESS'){
+          this.statu = true
+        }
+      },
       toTransaction() {
-        this.$router.push({ path: '/repaymentDetail' })
+        this.$router.push({ path: '/home/transaction' })
       },
       backHome() {
         this.$router.push({ path: '/home' })

@@ -139,12 +139,13 @@
         width:80%;
         background: #41a1fd;
         margin-top:4rem;
+        font-size: 1rem;
       }
       .back-home{
         margin-top: 1rem;
         span{
           color: #333;
-          font-size: 1rem;
+          font-size: 0.9rem;
         }
         span.vux-1px-b:after{
           border-color:#333;

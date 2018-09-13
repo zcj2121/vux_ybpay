@@ -80,19 +80,17 @@
         signIn(this.form).then(response => {
           if (response) {
             if (response.returnCode === 'SUCCESS') {
-              console.log(response)
               setToken(response.data.token)
               this.$store.commit('SET_TOKEN', response.data.token)
               this.$store.commit('SET_PHONE', response.data.phone)
               this.$store.commit('SET_USER_ID', response.data.userId)
+              localStorage.setItem('userData', JSON.stringify(response.data))
               this.signDis = true
               this.$vux.toast.show({
                 type: 'success',
                 text: '登陆成功'
               })
-              setTimeout(() => {
-                this.$router.push({ path: '/home' })
-              }, 1000)
+              this.$router.push({ path: '/home' })
             } else {
               this.signDis = false
               this.$vux.toast.show({

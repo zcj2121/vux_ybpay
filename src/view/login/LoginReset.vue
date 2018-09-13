@@ -87,18 +87,14 @@
                 type: 'success',
                 text: '修改成功'
               })
-              setTimeout(() => {
-                this.$router.push({ path: '/loginLanding', query: { phone: this.form.phone }})
-              }, 1000)
+              this.$router.push({ path: '/loginLanding', query: { phone: this.form.phone }})
             } else {
               if (response.returnCode === 'VERIFY_CODE_ERR') {
                 this.$vux.toast.show({
                   type: 'success',
                   text: response.returnMessage
                 })
-                setTimeout(() => {
-                  this.$router.push({ path: '/loginForget' })
-                }, 1000)
+                this.$router.push({ path: '/loginForget' })
               }
               this.subDis = false
               this.$vux.toast.show({

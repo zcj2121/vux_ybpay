@@ -1,13 +1,15 @@
 <template>
   <div class="user">
     <div class="header">
-      <a class="header-box">
+      <a class="header-box" @click="toNext">
         <div class="weui-media-box__hd">
           <img src="../assets/img/user_null.png" alt="" class="weui-media-box__thumb">
         </div>
         <div class="weui-media-box__bd">
-          <div v-if="isLogin">
-            <h4 class="weui-media-box__title">15367669076</h4>
+          <div v-if="isLog">
+            <!-- <h4 class="weui-media-box__title">{{this.$store.state.user.phone}}</h4>
+            <p class="weui-media-box__desc">{{this.$store.state.user.trueName}}</p> -->
+            <h4 class="weui-media-box__title">13645612345</h4>
             <p class="weui-media-box__desc">张三</p>
           </div>
           <div v-else>
@@ -53,10 +55,27 @@
     },
     data() {
       return {
-        isLogin: false
+        isLog: false
       }
     },
+    created(){
+      this.isLogin()
+    },
     methods: {
+      isLogin(){
+        console.log(this.$store.state.user)
+        console.log(this.$store.state.user.userId)
+        if(this.$store.state.user.token){
+          this.isLog = true
+        }
+      },
+      toNext() {
+        if (this.$store.state.user.userId) {
+          this.$router.push({ path: '/userDetail' })
+        } else {
+          this.$router.push({ path: '/login' })
+        }
+      },
       toTransaction() {
         this.$router.push({ path: '/home/transaction' })
       },

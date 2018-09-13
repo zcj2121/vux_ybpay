@@ -8,23 +8,23 @@
     </div>
     <div class="content">
       <div v-show="index=='0'">
-        <div class="item-box" v-show="repaymentList.length > 0">
-          <group class="list-item" v-for="(item, index) in 3" :key="index">
-            <cell title="1,000.00" is-link @click.native="toDetail(index)">
+        <div class="item-box" v-show="loanList.length > 0">
+          <group class="list-item" v-for="(item, index) in loanList" :key="index">
+            <cell :title="item.loanAmount" is-link @click.native="toDetail(item.orderNo)">
               <div class="badge-value">
-                <span class="vertical-middle">剩2期</span>
+                <span class="vertical-middle">剩{{item.notRepayNum}}期</span>
               </div>
             </cell>
-            <div class="weui-cell weui-cell--info">2018年51月08日借1000元 | 共3期 </div>
+            <div class="weui-cell weui-cell--info">{{item.loanTime | dateTime}}借{{item.loanAmount}}元 | 共{{item.totalRepayNum}}期</div>
           </group>
         </div>
-        <div class="null-info" v-show="repaymentList.length === 0">
+        <div class="null-info" v-show="loanList.length === 0">
           <img src="../assets/img/no-record.png" alt="">
           <div>暂时没有借款记录</div>
         </div>
       </div>
       <div v-show="index=='1'">
-        <div class="item-box">
+        <div class="item-box" v-show="repaymentList.length > 0">
           <group class="list-item" v-for="(item, index) in repaymentList" :key="index">
             <cell :title="item.repayAmount" is-link @click.native="toDetailRep(item.orderNo)">
               <div class="badge-value">
@@ -34,7 +34,7 @@
             <div class="weui-cell weui-cell--info">{{item.repayTime|dateTime}}</div>
           </group>
         </div>
-        <div class="null-info" v-if="false">
+        <div class="null-info" v-show="repaymentList.length === 0">
           <img src="../assets/img/no-record.png" alt="">
           <div>暂时没有还款记录</div>
         </div>
@@ -46,23 +46,26 @@
 </template>
 
 <script>
-  import { Tab, TabItem, GroupTitle, Group, Swiper, SwiperItem, Card, Cell } from 'vux'
+  import { Scroller, Tab, TabItem, GroupTitle, Group, Swiper, SwiperItem, Card, Cell } from 'vux'
   import { mapState } from 'vuex'
-  import { queryRepaymentList } from '@/api/transaction'
+  import { queryRepaymentList, getOrderApplyLoanList } from '@/api/transaction'
 
   export default {
     data() {
       return {
         index: 0,
+        loanList: [],
         repaymentList: []
       }
     },
     watch: {
     },
     created() {
+      this.queryloanList()
       this.queryRepaymentList()
     },
     components: {
+      Scroller,
       Tab,
       TabItem,
       GroupTitle,
@@ -76,23 +79,42 @@
       back() {
         this.$router.push({ path: '/home' })
       },
-      toDetail() {
-        this.$router.push({ path: '/loanDetail' })
+      toDetail(orderNo) {
+        if (!orderNo) {
+          return false
+        }
+        this.$router.push({ path: '/loanDetail', query: { loanOrderNo: orderNo }})
       },
       toDetailRep(orderNo) {
         if (!orderNo) {
           return false
         }
-        this.$router.push({ path: '/repaymentDetail', query: { orderNo } })
+        this.$router.push({ path: '/repaymentDetail', query: { orderNo }})
+      },
+      // 借款列表查询
+      queryloanList() {
+        getOrderApplyLoanList({
+          // userId: this.userId,
+          userId: '20180824userid',
+          curr: '1',
+          limit: '10000',
+          sign: '123'
+        }).then(res => {
+          console.log(res)
+          if (res.success) {
+            this.loanList = res.data.rows
+          }
+        }).catch((err) => {
+          console.log(err)
+        })
       },
       // 还款列表查询
-      queryRepaymentList () {
+      queryRepaymentList() {
         queryRepaymentList({
           // userId: this.userId,
           userId: 'userId001',
           sign: '123'
         }).then(res => {
-          console.log(res)
           if (res.success) {
             this.repaymentList = res.data
           }
@@ -153,9 +175,10 @@
     .content{
       margin-top:15px;
       width:100%;
-      padding-bottom: 70px;
+      overflow-y: auto;
+      height:100%;
       .item-box{
-        background: #fff;
+        padding-bottom: 70px;
         .weui-cells{
           margin-top: 0px;
           .weui-cell{

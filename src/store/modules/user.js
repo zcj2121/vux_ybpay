@@ -7,7 +7,8 @@ const user = {
     userChannel: '', // 用户来源
     token: getToken(), // token
     userId: '20180824userid', // 用户id
-    productCode: '20180824productcode' // 产品id
+    productCode: '20180824productcode', // 产品id
+    trueName: ''  // 真实姓名
   },
 
   mutations: {
@@ -25,6 +26,9 @@ const user = {
     },
     SET_PRODUCTCODE: (state, productCode) => {
       state.productCode = productCode
+    },
+    SET_TRUENAME: (state, trueName) => {
+      state.trueName = trueName
     }
   },
 

@@ -3,12 +3,12 @@
     <div class="header">
     </div>
     <div class="content">
-      <div class="video-box">
-        <video id="video" autoplay></video>
+      <div class="video-box" @click="upBtnFileFace">
+        <img src="../../../assets/img/validata_face.png" alt="">
       </div>
-      <div class="video-explain">请正对手机，进行人脸验证</div>
+      <div class="video-explain">点击进行人脸验证</div>
       <div class="video-info">按照提示完成相关动作</div>
-      <x-button class="video-btn" type="primary" link="/setTransaction">刷脸验证</x-button>
+      <x-button class="video-btn" type="primary" @click.native="upBtnFileFace">刷脸验证</x-button>
     </div>
     <div class="footer">
     </div>
@@ -17,20 +17,13 @@
 
 <script>
   import { XButton, XInput, GroupTitle, Group } from 'vux'
+  import { liteGetToken, liteGetResult } from '@/api/homeInitial'
   export default {
-    data () {
+    data() {
       return {
-        maskValue: ''
+        calltoken: '',
+        bizId: ''
       }
-    },
-    created () {
-      navigator.getUserMedia = navigator.getUserMedia ||
-        navigator.webkitGetUserMedia ||
-        navigator.mozGetUserMedia ||
-        navigator.msGetUserMedia // 获取媒体对象（这里指摄像头）
-      navigator.getUserMedia({
-        video: true
-      }, this.gotStream, this.noStream) // 参数1获取用户打开权限；参数二成功打开后调用，并传一个视频流对象，参数三打开失败后调用，传错误信息
     },
     components: {
       XButton,
@@ -39,19 +32,73 @@
       Group
     },
     methods: {
-      gotStream (stream) {
-        let video = document.getElementById('video')
-        video.src = URL.createObjectURL(stream)
-        video.onerror = function () {
-          stream.stop()
+      // 获取 face++ token
+      callToken() {
+        liteGetToken({
+          userId: '20180824userid',
+          returnUrl: 'http://localhost:8080',
+          sign: '123'
+        }).then(response => {
+          if (response) {
+            if (response.returnCode == 'SUCCESS') {
+              this.calltoken = response.data.token
+              this.bizId = response.data.bizId
+            } else {
+              this.$vux.toast.show({
+                type: 'cancel',
+                text: response.returnMessage
+              })
+            }
+          }
+        }).catch(() => {
+          this.$vux.toast.show({
+            type: 'cancel',
+            text: '网络异常'
+          })
+        })
+      },
+      upBtnFileFace() {
+        window.location.href = 'https://api.megvii.com/faceid/lite/do?token=' + this.calltoken
+      },
+      toNext(val) {
+        liteGetResult({
+          userId: '20180824userid',
+          bizId: this.bizId,
+          sign: '123'
+        }).then(response => {
+          if (response) {
+            if (response.returnCode == 'SUCCESS') {
+              this.$router.push({ name: 'loginForget', query: {}})
+            } else {
+              this.$vux.toast.show({
+                type: 'cancel',
+                text: response.returnMessage
+              })
+            }
+          }
+        }).catch(() => {
+          this.$vux.toast.show({
+            type: 'cancel',
+            text: '网络异常'
+          })
+        })
+      }
+    },
+    created() {
+      this.callToken()
+      let urlData = querystring.parse(window.location.search)
+      if (urlData.next) {
+        if (urlData.next == 'ok') {
+          this.toNext(urlData.calltoken)
+        } else {
+          this.callToken()
+          this.$vux.toast.show({
+            type: 'cancel',
+            text: '电商认证失败，请重试'
+          })
         }
-        stream.onended = this.noStream()
-      },
-      noStream () {
-
-      },
-      forgetPassword () {
-        this.$router.push({name: 'loginForget', query: {}})
+      } else {
+        this.callToken()
       }
     }
   }
@@ -98,9 +145,7 @@
         margin: auto;
         width:12rem;
         height:12rem;
-        border: 0.4rem solid #41a1fd;
-        border-radius: 0.2rem;
-        #video{
+        img{
           width:100%;
           height:100%;
         }
@@ -121,6 +166,7 @@
         width:80%;
         background: #41a1fd;
         margin-top:6rem;
+        font-size: 1rem;
       }
     }
     .footer{

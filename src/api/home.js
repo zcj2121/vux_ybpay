@@ -36,15 +36,15 @@ export function queryUserBindCardList(data) {
 // 验证交易密码
 export function validTradePwd(data) {
   return request({
-    url: 'user/validTradePwd',
+    url: '/user/validTradePwd',
     data: Qs.stringify(data)
   })
 }
 
 // 借款结果
-export function noticeApplyLoanResult(data) {
+export function queryLoanResult(data) {
   return request({
-    url: 'orderApplyLoan/noticeApplyLoanResult',
+    url: '/orderApplyLoan/queryLoanResult',
     data: Qs.stringify(data)
   })
 }

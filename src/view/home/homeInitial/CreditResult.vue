@@ -136,6 +136,7 @@
         width:80%;
         background: #41a1fd;
         margin-top:4rem;
+        font-size: 1rem;
       }
     }
     .footer{

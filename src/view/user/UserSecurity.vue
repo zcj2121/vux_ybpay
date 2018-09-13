@@ -1,12 +1,12 @@
 <template>
-  <div class="card-manage">
+  <div class="user-security">
     <div class="header">
     </div>
     <div class="content">
       <group class="cell-box-item">
-        <cell title="修改交易密码" is-link>
+        <cell title="修改交易密码" is-link @click.native="toModifyPassword">
         </cell>
-        <cell title="重置交易密码" is-link>
+        <cell title="重置交易密码" is-link  @click.native="toValidateUser">
         </cell>
       </group>
     </div>
@@ -25,12 +25,18 @@
       }
     },
     methods: {
+      toModifyPassword() {
+        this.$router.push({ path: '/modifyPassword' })
+      },
+      toValidateUser() {
+        this.$router.push({ path: '/validateUser' })
+      }
     }
   }
 </script>
 
 <style lang="less" rel="stylesheet/less">
-  .card-manage{
+  .user-security{
     .header{
     }
     .content{
@@ -68,7 +74,7 @@
 </style>
 
 <style lang="less" scoped rel="stylesheet/less">
-  .card-manage{
+  .user-security{
     .content{
       width:100%;
       padding-bottom: 70px;

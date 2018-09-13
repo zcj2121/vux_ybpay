@@ -1,22 +1,10 @@
 <template>
   <div class="accredit-book">
-    <div class="header vux-1px-b">
-      Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean,Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean,Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean,Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean,Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean
+    <div class="header vux-1px-b" v-html="content">
+      {{content}}
     </div>
     <div class="content">
-      <group>
-        <x-input title="姓名" name="username" placeholder="请输入姓名"></x-input>
-        <x-input title="身份证" name="mobile" placeholder="请输入身份证号"></x-input>
-        <datetime
-          v-model="date"
-          @on-change="dateChange"
-          title="日期"
-          @on-cancel="log('cancel')"
-          @on-confirm="onConfirm"
-          @on-hide="log('hide', $event)"></datetime>
-        <x-input title="电子签章" name="mobile" placeholder="请签署签章"></x-input>
-      </group>
-      <x-button class="next-btn" type="info" link="/phoneValidate">阅读并签署</x-button>
+      <x-button class="next-btn" type="info" @click.native="toSave" link="/phoneValidate">阅读并签署</x-button>
     </div>
     <div class="footer">
     </div>
@@ -26,12 +14,11 @@
 <script>
   import ProgressBar from '@/components/ProgressBar'
   import { Flexbox, FlexboxItem, Divider, XInput, Group, XButton, Cell, CheckIcon, TransferDom, Popup, Datetime } from 'vux'
+  import { getCreditAuthHtmlContract, signCreditAgreement } from '@/api/homeInitial'
   export default {
-    data () {
+    data() {
       return {
-        date: '2018-01-01',
-        isRead: false,
-        showread: false
+        content: ''
       }
     },
     directives: {
@@ -51,29 +38,57 @@
       Datetime
     },
     methods: {
-      onConfirm (val) {
-        console.log('on-confirm arg', val)
-        console.log('current value', this.date)
+      // 获取 合同数据
+      readData() {
+        getCreditAuthHtmlContract({
+          userId: this.$store.state.user.userId,
+          sign: '123'
+        })
+          .then(res => {
+            if (res) {
+              const data = res.data
+              this.content = data.content
+              console.log(this.content)
+            }
+          })
+          .catch(err => {
+            console.log(err)
+          })
       },
-      log (str1, str2 = '') {
-        console.log(str1, str2)
-      },
-      dateChange () {
-
+      // 阅读 签署
+      toSave() {
+        signCreditAgreement({
+          userId: this.$store.state.user.userId,
+          creditOrderNo: '20180824orderno',
+          sign: '123'
+        })
+          .then(res => {
+            if (res) {
+              const data = res.data
+              this.content = data.content
+            }
+          })
+          .catch(err => {
+            console.log(err)
+          })
       }
+    },
+    mounted() {
+      this.readData()
     }
   }
 </script>
 
 <style lang="less" rel="stylesheet/less">
   .accredit-book{
+    background: #FFFFFF;
     .header{
       background: #FFFFFF;
       padding: 15px;
       font-size: 1rem;
     }
     .content{
-      margin-bottom: 15px;
+      padding-bottom:4rem;
       .weui-cell{
         font-size: 1rem;
       }
@@ -99,32 +114,13 @@
           }
         }
       }
-      .weui-vcode{
-        .weui-btn{
-          padding-right: 0px;
-          color: #ffb400;
-          margin-left: 5px;
-          background:transparent;
-        }
-        .weui-btn:after{
-          border:none;
-          border-radius: 50px;
-        }
-        .weui-btn_mini{
-          padding:0px 0px 0px 0.1rem;
-          font-size:1rem;
-          line-height: 1rem;
-        }
-      }
-      .weui-input{
-        text-align: right;
-      }
     }
     .next-btn{
-      width:90%;
+      width:80%;
       background: #41a1fd;
       margin-top:4rem;
       border-radius: 4px;
+      font-size: 1rem;
     }
   }
 </style>

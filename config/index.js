@@ -13,8 +13,10 @@ module.exports = {
     proxyTable: {
       '/yeepay': {
         // target: 'http://172.18.163.147:8089/fs-web', // 何君
+        // target: 'http://192.168.1.190:8089/fs-web', // 何君 哆啦宝
         // target: 'http://172.18.162.224:8080/fs-web', // 亚洲
-        target: 'http://172.18.162.204:8030/fs-face', // 徐静
+        target: 'http://172.18.162.39:8080/fs-web', // 徐静
+        // target: 'http://192.168.1.129:8080/fs-web', // 徐静 哆啦宝
         changeOrigin: true,
         pathRewrite: {
           '^/yeepay': ''
